@@ -14,14 +14,20 @@ export default async function(urlOrId: string) {
 
     video.getHtml5Player(request.data)
 
-    await video.fetchTokens()
+    const pending: Promise<unknown>[] = []
+
+    pending.push(video.fetchTokens())
     
     const moreFormats: YoutubeVideoFormat[] = []
     const dashMpdUrl = video['json'].streamingData?.dashManifestUrl
     const m3u8Url = video['json'].streamingData?.hlsManifestUrl
 
-    if (dashMpdUrl) moreFormats.push(...await Util.dashMpdFormat(dashMpdUrl))
-    if (m3u8Url) moreFormats.push(...await Util.m3u8Format(m3u8Url))
+    if (dashMpdUrl) pending.push(Util.dashMpdFormat(dashMpdUrl))
+    if (m3u8Url) pending.push(Util.m3u8Format(m3u8Url))
+
+    const resolved = await Promise.all(pending)
+
+    for (const moreFormat of resolved.slice(1)) moreFormats.push(...moreFormat as YoutubeVideoFormat[])
 
     video.moreFormats = moreFormats
 
