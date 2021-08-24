@@ -46,6 +46,11 @@ export class YoutubeSearchResults {
             const video = data.videoRenderer
 
             if (video) {
+                const rawViewCount: string = video.viewCountText.simpleText?.split(" ")[0] ?? video.viewCountText.runs[0].text
+                const formattedDuration = video.lengthText?.simpleText ?? "0"
+                const formattedReadableDuration = video.lengthText?.accessibility.accessibilityData.label ?? "0"
+                const formattedViewCount = video.shortViewCountText?.simpleText ?? video.shortViewCountText.runs[0].text
+
                 arr.push({
                     id: video.videoId, 
                     thumbnails: video.thumbnail.thumbnails, 
@@ -55,13 +60,13 @@ export class YoutubeSearchResults {
                         id: video.ownerText.runs[0].navigationEndpoint.commandMetadata.webCommandMetadata.url.split("/").slice(-1)[0],
                         thumbnails: video.channelThumbnailSupportedRenderers.channelThumbnailWithLinkRenderer.thumbnail.thumbnails
                     },
-                    viewCount: Number(video.viewCountText.simpleText.split(" ")[0].replace(/,/g, "")),
+                    viewCount: Number(rawViewCount.replace(/,/g, "")),
                     publishedTimeAgo: video.publishedTimeText?.simpleText,
-                    formattedDuration: video.lengthText.simpleText,
-                    formattedReadableDuration: video.lengthText.accessibility.accessibilityData.label, 
-                    formattedViewCount: video.shortViewCountText.simpleText,
+                    formattedDuration: formattedDuration,
+                    formattedReadableDuration: formattedReadableDuration, 
+                    formattedViewCount: formattedViewCount,
                     description: video.detailedMetadataSnippets?.[0].snippetText.runs.map((e: any) => e.text).join(""),
-                    duration: ((): number => {
+                    duration: formattedDuration !== "0" ? ((): number => {
                         let n = 0
                         let y = 0
                         for (const pointer of video.lengthText.simpleText.split(":").reverse().map((d: string) => Number(d))) {
@@ -72,7 +77,7 @@ export class YoutubeSearchResults {
                             y++
                         }
                         return n 
-                    })()
+                    })() : 0
                 })
             }
         }
