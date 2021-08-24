@@ -1,4 +1,4 @@
-import getYoutubeTrending from "../functions/getYoutubeTrending";
+import { getYoutubeTrending } from "../functions/getYoutubeTrending";
 
 getYoutubeTrending()
 .then(trending  => {

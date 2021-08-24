@@ -1,5 +1,7 @@
 import { YoutubeVideoFormat } from "../structures/YoutubeVideo"
+import { parse as xmlParse } from "fast-xml-parser"
 import formats from "./formats"
+import axios from "axios"
 
 export class Util extends null {
     constructor() {}
@@ -64,5 +66,65 @@ export class Util extends null {
         format.isHLS = /\/manifest\/hls_(variant|playlist)\//.test(format.url as string);
         format.isDashMPD = /\/manifest\/dash\//.test(format.url as string);
         return format
+    }
+
+    static async dashMpdFormat(url: string): Promise<YoutubeVideoFormat[]> {
+        const moreFormats: YoutubeVideoFormat[] = []
+        const xmlData = await axios.get<string>(new URL(url, this.getYTVideoURL()).toString())
+        const xml = xmlParse(xmlData.data, {
+            attributeNamePrefix: "$",
+            ignoreAttributes: false
+        })
+
+        for (const adaptationSet of xml.MPD.Period.AdaptationSet) {
+            for (const representation of adaptationSet.Representation) {
+                const itag = Number(representation["$id"]) as keyof typeof formats
+                const reservedFormat = formats[itag]
+
+                if (reservedFormat) {
+                    const format: YoutubeVideoFormat = {
+                        ...reservedFormat,
+                        itag, url,
+                        type: reservedFormat.mimeType.split(";")[0],
+                        codec: reservedFormat.mimeType.split("\"")[1].split("\"")[0]
+                    }
+
+                    if (representation["$height"]) {
+                        format.width = Number(representation["$width"])
+                        format.height = Number(representation["$height"])
+                        format.fps = Number(representation["$frameRate"])
+                    }
+                    
+                    moreFormats.push(this.addMetadataToFormat(format))
+                }
+            }
+        }
+
+        return moreFormats
+    }
+
+    static async m3u8Format(url: string): Promise<YoutubeVideoFormat[]> {
+        const moreFormats: YoutubeVideoFormat[] = []
+        const { data } = await axios.get<string>(new URL(url, this.getYTVideoURL()).toString())
+
+        for (const line of data.split("\n")) {
+            if (!/^https?:\/\//.test(line)) continue
+
+            const itag = Number(line.match(/\/itag\/(\d+)\//)?.[1]) as keyof typeof formats
+            const reservedFormat = formats[itag]
+
+            if (reservedFormat) {
+                const format = {
+                    ...reservedFormat,
+                    itag, url: line,
+                    type: reservedFormat.mimeType.split(";")[0],
+                    codec: reservedFormat.mimeType.split("\"")[1].split("\"")[0]
+                }
+
+                moreFormats.push(this.addMetadataToFormat(format))
+            }
+        }
+
+        return moreFormats
     }
 }

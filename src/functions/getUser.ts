@@ -1,5 +1,5 @@
 import axios from "axios";
-import {YoutubeChannel} from "../structures/YoutubeChannel";
+import { YoutubeChannel } from "../structures/YoutubeChannel";
 import { Util } from "../util/Util";
 
 /**
@@ -7,7 +7,7 @@ import { Util } from "../util/Util";
  * @param id The id or name of the owner.
  * @returns 
  */
-export default async function(id: string) {
+export async function getUser(id: string) {
     const request = await axios.get<string>(`${Util.getYTUserURL()}/${id}?hl=en`)
 
     const json = JSON.parse(

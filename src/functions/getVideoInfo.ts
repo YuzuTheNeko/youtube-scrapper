@@ -1,9 +1,8 @@
 import axios from "axios";
-import Miniget from "miniget";
-import { YoutubeVideo } from "../structures/YoutubeVideo";
+import { YoutubeVideo, YoutubeVideoFormat } from "../structures/YoutubeVideo";
 import { Util } from "../util/Util";
 
-export default async function(urlOrId: string) {
+export async function getVideoInfo(urlOrId: string) {
     const id = Util.getId(urlOrId)
 
     const request = await axios.get<string>(`${Util.getYTVideoURL()}${id}&hl=en`)
@@ -14,7 +13,22 @@ export default async function(urlOrId: string) {
 
     video.getHtml5Player(request.data)
 
-    await video.fetchTokens() 
+    const pending: Promise<unknown>[] = []
+
+    pending.push(video.fetchTokens())
+    
+    const moreFormats: YoutubeVideoFormat[] = []
+    const dashMpdUrl = video['json'].streamingData?.dashManifestUrl
+    const m3u8Url = video['json'].streamingData?.hlsManifestUrl
+
+    if (dashMpdUrl) pending.push(Util.dashMpdFormat(dashMpdUrl))
+    if (m3u8Url) pending.push(Util.m3u8Format(m3u8Url))
+
+    const resolved = await Promise.all(pending)
+
+    for (const moreFormat of resolved.slice(1)) moreFormats.push(...moreFormat as YoutubeVideoFormat[])
+
+    video.moreFormats = moreFormats
 
     return video
 }

@@ -16,19 +16,19 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.21.1",
+    "fast-xml-parser": "^3.19.0",
+    "m3u8stream": "^0.8.4",
     "miniget": "^4.2.1"
   },
   "devDependencies": {
     "@discordjs/opus": "^0.5.3",
     "@discordjs/voice": "^0.6.0",
-    "@types/express": "^4.17.13",
     "@types/node": "^16.6.2",
     "discord.js": "^13.1.0",
-    "express": "^4.17.1",
-    "ffmpeg": "^0.0.4",
     "ffmpeg-static": "^4.4.0",
     "gen-esm-wrapper": "^1.1.2",
     "libsodium-wrappers": "^0.7.9",
+    "speaker": "^0.5.3",
     "typedoc": "^0.21.6"
   }
 }

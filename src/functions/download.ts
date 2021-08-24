@@ -1,13 +1,13 @@
 import { YoutubeVideoFormat } from "../structures/YoutubeVideo";
-import downloadFromVideo from "./downloadFromVideo";
-import getVideoInfo from "./getVideoInfo";
+import { downloadFromVideo } from "./downloadFromVideo";
+import { getVideoInfo } from "./getVideoInfo";
 
 /**
  * Downloads a youtube stream using its url or id.
  * @param urlOrId The url or id of the song to download its stream.
  * @param format The format to use for the song.
  */
-export default async function(urlOrId: string, format?: YoutubeVideoFormat) {
+export async function download(urlOrId: string, format?: YoutubeVideoFormat) {
     const video = await getVideoInfo(urlOrId)
 
     if (format) {

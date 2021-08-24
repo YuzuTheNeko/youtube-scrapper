@@ -1,9 +1,9 @@
 import axios from "axios"
-import { DEFAULT_CONTEXT, ErrorCodes } from "../util/constants"
-import noop from "../util/noop"
-import { Regexes } from "../util/Regexes"
+import * as Regexes from "../util/Regexes"
+import { noop } from "../util/noop"
 import { Util } from "../util/Util"
-import TypeError from "./TypeError"
+import { TypeError } from "./TypeError"
+import { DEFAULT_CONTEXT, ErrorCodes } from "../util/constants"
 
 export interface PlaylistVideo {
     id: string
@@ -26,7 +26,7 @@ export interface PlaylistData {
     description: string
 }
 
-export default class Playlist {
+export class Playlist {
     tracks: PlaylistVideo[] = []
     listId: string
     data?: PlaylistData

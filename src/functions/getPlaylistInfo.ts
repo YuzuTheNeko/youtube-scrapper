@@ -1,11 +1,11 @@
-import Playlist from "../structures/Playlist";
+import { Playlist } from "../structures/Playlist";
 import { Util } from "../util/Util";
 
 export interface GetPlaylistInfoOptions {
     full?: boolean
 }
 
-export default async function(urlOrId: string, options: GetPlaylistInfoOptions = {}): Promise<Playlist> {
+export async function getPlaylistInfo(urlOrId: string, options: GetPlaylistInfoOptions = {}): Promise<Playlist> {
     const listId = Util.getListId(urlOrId)
 
     const playlist = new Playlist(listId)
