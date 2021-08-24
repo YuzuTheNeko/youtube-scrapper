@@ -1,13 +1,13 @@
 import axios from "axios"
 import Miniget from "miniget"
+import m3u8stream from "m3u8stream"
 import querystring from "querystring"
-import { PassThrough, Readable } from "stream"
-import download from "../functions/download"
-import downloadFromVideo from "../functions/downloadFromVideo"
+import { Util } from "../util/Util"
+import { PassThrough } from "stream"
+import { TypeError } from "./TypeError"
 import { cachedTokens } from "../util/cache"
 import { ErrorCodes } from "../util/constants"
-import { Util } from "../util/Util"
-import TypeError from "./TypeError"
+import { download } from "../functions/download"
 
 export interface YoutubeVideoDetails {
     url: string
@@ -38,36 +38,36 @@ export interface YoutubeVideoFormat {
     mimeType: string
     codec: string
     type: string
-    bitrate: number
+    bitrate: number | null
     width?: number
     height?: number
-    initRange: {
+    initRange?: {
         start: number
         end: number
     }
-    indexRange: {
+    indexRange?: {
         start: number
         end: number
     }
-    lastModifiedTimestamp: number
-    contentLength: number
-    quality: string
+    lastModifiedTimestamp?: number
+    contentLength?: number
+    quality?: string
     audioChannels?: number
     audioSampleRate?: number
     loudnessDb?: number
     s?: string
     sp?: string
-    url?: string
-    fps: number
-    qualityLabel: string
-    projectionType: "RECTANGULAR",
-    averageBitrate: number
-    approxDurationMs: number
+    url: string
+    fps?: number
+    qualityLabel: string | null
+    projectionType?: "RECTANGULAR",
+    averageBitrate?: number
+    approxDurationMs?: number
     signatureCipher?: string
-    getDecodedCipher: () => string | undefined
+    getDecodedCipher?: () => string | undefined
 
     /* Provided by itag format. */
-    audioBitrate?: number
+    audioBitrate?: number | null
 
     /* These come from metadata and not by youtube. */
     hasAudio?: boolean
@@ -79,14 +79,17 @@ export interface YoutubeVideoFormat {
 
 export interface DownloadOptions {
     chunkMode?: {
-        chunkSize: number
+        chunkSize?: number
     }
     highWaterMark?: number
-    resource?: PassThrough
+    resource?: PassThrough,
+    begin?: number | string
 }
 
 export class YoutubeVideo {
     private json: any
+
+    moreFormats?: YoutubeVideoFormat[]
     html5Player?: string
     tokens?: string[]
 
@@ -95,12 +98,12 @@ export class YoutubeVideo {
     }
 
     get formats(): YoutubeVideoFormat[] {
-        const arr: YoutubeVideoFormat[] = []
+        const arr = this.moreFormats ?? []
 
         for (const format of 
             [].concat(
-                this.json.streamingData.adaptiveFormats ?? [],
-                this.json.streamingData.formats ?? []
+                this.json.streamingData?.adaptiveFormats ?? [],
+                this.json.streamingData?.formats ?? []
             ) as any[]) {
             
             let frmt: YoutubeVideoFormat = {
@@ -161,26 +164,37 @@ export class YoutubeVideo {
     }
 
     download(format: YoutubeVideoFormat, options: DownloadOptions = {}) {
-        if (format.isLive) {
-            throw new TypeError(ErrorCodes.UNSUPPORTED_FORMAT)
+        if (format.isHLS || format.isDashMPD) {
+            return m3u8stream(format.url as string, {
+                begin: options.begin ?? (format.isLive ? Date.now() : 0),
+                highWaterMark: options.highWaterMark ?? 64 * 1024,
+                parser: format.isDashMPD ? "dash-mpd" : "m3u8",
+                id: String(format.itag)
+            })
         } else {
             if (options.chunkMode) {
                 const stream = options.resource ?? new PassThrough({
-                    // Set watermark to 512000 (default) for chunking.
-                    highWaterMark: options.highWaterMark ?? 512000
+                    // Set watermark to 64KB (default) for chunking.
+                    highWaterMark: options.highWaterMark ?? 64 * 1024
                 }) 
     
-                let downloadChunkSize = options.chunkMode.chunkSize ?? 512000
+                let downloadChunkSize = options.chunkMode.chunkSize ?? 256 * 1024
     
                 let endBytes = downloadChunkSize, startBytes = 0, chunkIndex = 0
+
+                let awaitDrain: (() => void) | null
+
+                stream.on("drain", () => {
+                    awaitDrain?.()
+                    awaitDrain = null
+                })
                 
                 const getNextChunk = () => {
                     chunkIndex++
     
-                    if (endBytes > format.contentLength) {
-                        endBytes = format.contentLength
+                    if (endBytes > (format.contentLength as number)) {
+                        endBytes = format.contentLength as number
                     }
-    
                     const request = Miniget(format.url as string, {
                         headers: {
                             Range: `bytes=${startBytes}-${endBytes}`
@@ -189,6 +203,7 @@ export class YoutubeVideo {
 
                     // Handle unknown 403 errors accordinly.
                     request.once("error", error => {
+                        try { request.destroy() } catch { }
                         if (error.message.includes("403")) {
                             request.removeAllListeners()
                             options.resource = stream
@@ -196,7 +211,6 @@ export class YoutubeVideo {
                         } else {
                             throw error
                         }
-                        request.destroy()
                     })
     
                     request.on("data", (chunk: Buffer) => {
@@ -205,7 +219,11 @@ export class YoutubeVideo {
                             return;
                         }
                         startBytes += chunk.length
-                        stream.write(chunk)
+                        
+                        if (!stream.write(chunk)) {
+                            request.pause()
+                            awaitDrain = () => request.resume()
+                        }
                     })
     
                     request.once("end", () => {
@@ -213,7 +231,7 @@ export class YoutubeVideo {
                         if (endBytes === format.contentLength) {
                             return;
                         }
-                        endBytes = startBytes + downloadChunkSize 
+                        endBytes = startBytes + downloadChunkSize
                         getNextChunk() 
                     })
                 }
@@ -311,18 +329,15 @@ export class YoutubeVideo {
         const tokens = fakeTokens.map(token => {
             switch(token.i) {
                 case 'yU':
-                    return `w${token.n}`  
-                    break;
+                    return `w${token.n}`
                 case 'QQ':
                     return `p${token.n}`
-                    break;
+                case 'Hu':
+                    return `s${token.n}`
                 case 'z6':
                     return `r`
-                    break
                 default:
-                    console.log(`Found token`, token)
                     throw new TypeError(ErrorCodes.UNKNOWN_TOKEN)
-                    break
             }
         })
 

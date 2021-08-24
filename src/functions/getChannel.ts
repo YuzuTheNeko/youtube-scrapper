@@ -1,8 +1,8 @@
 import axios from "axios";
-import {YoutubeChannel} from "../structures/YoutubeChannel";
+import { YoutubeChannel } from "../structures/YoutubeChannel";
 import { Util } from "../util/Util";
 
-export default async function(id: string) {
+export async function getChannel(id: string) {
     const request = await axios.get<string>(`${Util.getYTChannelURL()}/${id}?hl=en`)
 
     const json = JSON.parse(

@@ -1,8 +1,4 @@
-import axios from "axios";
-import getPlaylistInfo from "../functions/getPlaylistInfo";
-import getVideoInfo from "../functions/getVideoInfo";
-import { Regexes } from "../util/Regexes";
-import { Util } from "../util/Util";
+import { getPlaylistInfo } from "../functions/getPlaylistInfo";
 
 const s = Date.now()
 

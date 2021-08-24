@@ -1,12 +1,11 @@
 import axios from "axios";
-import { inspect } from "util";
 import { SearchError } from "../structures/SearchError";
 import { YoutubeSearchResults } from "../structures/YoutubeSearchResults";
 import { ErrorCodes } from "../util/constants";
-import noop from "../util/noop";
+import { noop } from "../util/noop";
 import { Util } from "../util/Util";
 
-export default async function(query: string) {
+export async function search(query: string) {
     const params = new URLSearchParams()
     
     params.append("search_query", query)
@@ -20,7 +19,13 @@ export default async function(query: string) {
     }
 
     try {
-        const json = JSON.parse(request.data.split("var ytInitialData = ")[1].split(";</script>")[0])
+        const json = JSON.parse(
+            Util.getBetween(
+                request.data,
+                `var ytInitialData = `,
+                `;</script>`
+            )
+        )
 
         return new YoutubeSearchResults(json)
     } catch (error: any) {
