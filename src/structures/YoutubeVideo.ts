@@ -137,7 +137,7 @@ export class YoutubeVideo {
             }
 
             if (!frmt.url) {
-                frmt = Object.assign(frmt, querystring.parse(frmt.signatureCipher))
+                frmt = Object.assign(frmt, querystring.parse(frmt.signatureCipher as string))
             }
 
             let sig = this.tokens && frmt.s ? YoutubeVideo.decipher(this.tokens, frmt.s) : undefined
