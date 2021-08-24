@@ -1,6 +1,5 @@
-import getVideoInfo from "../functions/getVideoInfo";
-import { PassThrough } from "stream";
-import downloadFromVideo from "../functions/downloadFromVideo";
+import { getVideoInfo } from "../functions/getVideoInfo";
+import { downloadFromVideo } from "../functions/downloadFromVideo";
 import { Client, Guild, Intents } from "discord.js"
 import {
     AudioPlayerStatus,
@@ -58,14 +57,12 @@ client.on("ready", async () => {
     })
 
     const stream = downloadFromVideo(video, format, {
-        chunkMode: {
-            chunkSize: 512000 * 2
-        }
+        chunkMode: {}
     })
 
     player.play(
         createAudioResource(
-            await stream as PassThrough
+            stream
         )
     )
 })

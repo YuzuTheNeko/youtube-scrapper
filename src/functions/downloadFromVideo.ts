@@ -6,7 +6,7 @@ import { DownloadOptions, YoutubeVideo, YoutubeVideoFormat } from "../structures
  * @param format 
  * @returns 
  */
-export default function downloadFromVideo(video: YoutubeVideo, format?: YoutubeVideoFormat, options?: DownloadOptions) {
+export function downloadFromVideo(video: YoutubeVideo, format?: YoutubeVideoFormat, options?: DownloadOptions) {
     if (!format) format = video.formats.find(c => c.quality !== "LOW")
     
     if (!format) {

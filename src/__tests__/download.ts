@@ -1,6 +1,6 @@
 import { opus } from "prism-media"
-import downloadFromVideo from "../functions/downloadFromVideo"
-import getVideoInfo from "../functions/getVideoInfo"
+import { downloadFromVideo } from "../functions/downloadFromVideo"
+import { getVideoInfo } from "../functions/getVideoInfo"
 import Speaker from "speaker"
 
 async function d() {

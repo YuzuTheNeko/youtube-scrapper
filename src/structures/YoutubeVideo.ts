@@ -1,14 +1,13 @@
 import axios from "axios"
 import Miniget from "miniget"
+import m3u8stream from "m3u8stream"
 import querystring from "querystring"
-import { PassThrough, Readable } from "stream"
-import download from "../functions/download"
-import downloadFromVideo from "../functions/downloadFromVideo"
+import { Util } from "../util/Util"
+import { PassThrough } from "stream"
+import { TypeError } from "./TypeError"
 import { cachedTokens } from "../util/cache"
 import { ErrorCodes } from "../util/constants"
-import { Util } from "../util/Util"
-import m3u8stream from "m3u8stream"
-import TypeError from "./TypeError"
+import { download } from "../functions/download"
 
 export interface YoutubeVideoDetails {
     url: string

@@ -1,7 +1,7 @@
 import { FFmpeg } from "prism-media"
+import { getVideoInfo } from "../functions/getVideoInfo"
+import { downloadFromVideo } from "../functions/downloadFromVideo"
 import Speaker from "speaker"
-import getVideoInfo from "../functions/getVideoInfo"
-import downloadFromVideo from "../functions/downloadFromVideo"
 
 async function d() {
   const video = await getVideoInfo("https://www.youtube.com/watch?v=5qap5aO4i9A")

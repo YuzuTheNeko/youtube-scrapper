@@ -1,4 +1,4 @@
-import search from "../functions/search";
+import { search } from "../functions/search";
 
 async function s() {
   const result = await search('lofi hip hop radio')

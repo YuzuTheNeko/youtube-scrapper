@@ -1,12 +1,11 @@
 import axios from "axios";
-import { inspect } from "util";
 import { SearchError } from "../structures/SearchError";
 import { YoutubeSearchResults } from "../structures/YoutubeSearchResults";
 import { ErrorCodes } from "../util/constants";
-import noop from "../util/noop";
+import { noop } from "../util/noop";
 import { Util } from "../util/Util";
 
-export default async function(query: string) {
+export async function search(query: string) {
     const params = new URLSearchParams()
     
     params.append("search_query", query)

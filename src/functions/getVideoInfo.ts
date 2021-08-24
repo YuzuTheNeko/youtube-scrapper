@@ -1,9 +1,8 @@
 import axios from "axios";
-import Miniget from "miniget";
 import { YoutubeVideo, YoutubeVideoFormat } from "../structures/YoutubeVideo";
 import { Util } from "../util/Util";
 
-export default async function(urlOrId: string) {
+export async function getVideoInfo(urlOrId: string) {
     const id = Util.getId(urlOrId)
 
     const request = await axios.get<string>(`${Util.getYTVideoURL()}${id}&hl=en`)
