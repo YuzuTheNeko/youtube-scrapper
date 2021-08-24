@@ -20,7 +20,7 @@ export default async function(urlOrId: string, format?: YoutubeVideoFormat) {
         if (opus) {
             return downloadFromVideo(video, opus)
         } else {
-            // This will use best format.
+            // This will last available format.
             return downloadFromVideo(video, video.formats[video.formats.length - 1])
         }
     }
