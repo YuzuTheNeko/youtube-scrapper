@@ -35,7 +35,7 @@ client.on("ready", async () => {
     connection.subscribe(player)
 
     
-    const video = await getVideoInfo("https://www.youtube.com/watch?v=vsuxhAMXdmU") 
+    const video = await getVideoInfo("https://www.youtube.com/watch?v=f8HtmFtGSQo") 
 
     if (!video) {
         return;
@@ -48,10 +48,15 @@ client.on("ready", async () => {
     })
     player.on("stateChange", (o, n) => {
         console.log(o.status, n.status)
-        if (n.status === AudioPlayerStatus.Playing && o.status === AudioPlayerStatus.Idle) {
+        if (o.status === AudioPlayerStatus.Playing && n.status === AudioPlayerStatus.Idle) {
             player.play(
                 createAudioResource(
-                    downloadFromVideo(video, format)
+                    downloadFromVideo(video, format, {
+                        chunkMode: {
+                            chunkSize: 512000
+                        },
+                        highWaterMark: 16384
+                    })
                 )
             )
         }
@@ -59,8 +64,9 @@ client.on("ready", async () => {
 
     const stream = downloadFromVideo(video, format, {
         chunkMode: {
-            chunkSize: 512000 * 2
-        }
+            chunkSize: 512000
+        },
+        highWaterMark: 16384
     })
 
     player.play(
