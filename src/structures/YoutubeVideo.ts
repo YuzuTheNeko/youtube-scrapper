@@ -8,6 +8,7 @@ import { TypeError } from "./TypeError"
 import { cachedTokens } from "../util/cache"
 import { ErrorCodes } from "../util/constants"
 import { download } from "../functions/download"
+import { extractTokens } from "../util/decipher"
 
 export interface YoutubeVideoDetails {
     url: string
@@ -267,7 +268,7 @@ export class YoutubeVideo {
 
     static decipher(tokens: string[], sig: string): string {
         let arr = sig.split("")
-        
+
         for (let i = 0;i < tokens.length;i++) {
             const token = tokens[i]
             let position; 
@@ -317,29 +318,7 @@ export class YoutubeVideo {
 
         const request = await axios.get<string>(this.html5Player as string)
 
-        const fakeTokens = request.data.split('{a=a.split("");')[1].split(';return a.join("")};')[0].split(";").map(ftoken => {
-            return {
-                i: ftoken.slice(3, 5),
-                t: ftoken.slice(0, 2),
-                raw: ftoken,
-                n: ftoken.match(/(\d+)/g)?.join("") 
-            }
-        })
-
-        const tokens = fakeTokens.map(token => {
-            switch(token.i) {
-                case 'yU':
-                    return `w${token.n}`
-                case 'QQ':
-                    return `p${token.n}`
-                case 'Hu':
-                    return `s${token.n}`
-                case 'z6':
-                    return `r`
-                default:
-                    throw new TypeError(ErrorCodes.UNKNOWN_TOKEN)
-            }
-        })
+        const tokens = extractTokens(request.data)
 
         //@ts-ignore 
         cachedTokens = tokens
