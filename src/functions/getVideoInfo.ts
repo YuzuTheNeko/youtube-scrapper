@@ -1,6 +1,6 @@
 import axios from "axios";
 import Miniget from "miniget";
-import { YoutubeVideo } from "../structures/YoutubeVideo";
+import { YoutubeVideo, YoutubeVideoFormat } from "../structures/YoutubeVideo";
 import { Util } from "../util/Util";
 
 export default async function(urlOrId: string) {
@@ -14,7 +14,16 @@ export default async function(urlOrId: string) {
 
     video.getHtml5Player(request.data)
 
-    await video.fetchTokens() 
+    await video.fetchTokens()
+    
+    const moreFormats: YoutubeVideoFormat[] = []
+    const dashMpdUrl = video['json'].streamingData?.dashManifestUrl
+    const m3u8Url = video['json'].streamingData?.hlsManifestUrl
+
+    if (dashMpdUrl) moreFormats.push(...await Util.dashMpdFormat(dashMpdUrl))
+    if (m3u8Url) moreFormats.push(...await Util.m3u8Format(m3u8Url))
+
+    video.moreFormats = moreFormats
 
     return video
 }

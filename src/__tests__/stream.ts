@@ -74,14 +74,3 @@ client.on("ready", async () => {
 import config from "./config.json"
 
 client.login(config.token)
-
-import express from "express"
-import download from "../functions/download";
-
-const app = express()
-
-app.use(express.static("./docs"))
-
-app.listen(3000, () => {
-    console.log(`Ready`)
-})
