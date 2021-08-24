@@ -37,7 +37,7 @@ export class YoutubeSearchResults {
         return Number(this.json.estimatedResults)
     }
 
-    getVideos(): YoutubeSearchVideoInfo[] {
+    get videos(): YoutubeSearchVideoInfo[] {
         const arr: YoutubeSearchVideoInfo[] = []
 
         const videos = this.json.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer.contents[0].itemSectionRenderer.contents
