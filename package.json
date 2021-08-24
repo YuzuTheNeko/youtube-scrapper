@@ -1,6 +1,6 @@
 {
   "name": "youtube-scrapper",
-  "version": "1.0.0",
+  "version": "1.0.0-alpha",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -11,9 +11,18 @@
     "compile": "tsc",
     "test": "npm run compile && node dist/__tests__/stream"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "url": "https://github.com/Rubenennj/youtube-scrapper"
+  },
+  "homepage": "https://github.com/Rubenennj/youtube-scrapper",
+  "keywords": [
+    "scrapper", "youtube", "audio", "livestream", "api", "downloader"
+  ],
+  "contributors": [
+    "azusfin"
+  ],
+  "author": "ruben40000",
+  "license": "MIT",
   "dependencies": {
     "axios": "^0.21.1",
     "fast-xml-parser": "^3.19.0",
