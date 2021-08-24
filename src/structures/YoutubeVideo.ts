@@ -63,8 +63,8 @@ export interface YoutubeVideoFormat {
     projectionType: "RECTANGULAR",
     averageBitrate: number
     approxDurationMs: number
-    signatureCipher: string
-    getDecodedCipher: () => string
+    signatureCipher?: string
+    getDecodedCipher: () => string | undefined
 
     /* Provided by itag format. */
     audioBitrate?: number
