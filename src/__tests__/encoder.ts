@@ -13,7 +13,8 @@ import prism from "prism-media"
 
             console.log(format.url)
             const download = downloadFromVideo(video, format, { 
-                chunkMode: {}
+                chunkMode: {},
+                pipe: false
             }) as PassThrough
     
             let index = 0

@@ -85,6 +85,7 @@ export interface DownloadOptions {
     highWaterMark?: number
     resource?: PassThrough,
     begin?: number | string
+    pipe?: boolean
 }
 
 export class YoutubeVideo {
@@ -183,6 +184,8 @@ export class YoutubeVideo {
     
                 let endBytes = downloadChunkSize, startBytes = 0, chunkIndex = 0
 
+                const pipelike = options.pipe ?? true
+                
                 let awaitDrain: (() => void) | null
 
                 stream.on("drain", () => {
@@ -221,9 +224,13 @@ export class YoutubeVideo {
                         }
                         startBytes += chunk.length
                         
-                        if (!stream.write(chunk)) {
-                            request.pause()
-                            awaitDrain = () => request.resume()
+                        if (pipelike) {
+                            if (!stream.write(chunk)) {
+                                request.pause()
+                                awaitDrain = () => request.resume()
+                            }
+                        } else {
+                            stream.write(chunk)
                         }
                     })
     
