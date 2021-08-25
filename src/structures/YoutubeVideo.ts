@@ -188,10 +188,12 @@ export class YoutubeVideo {
                 
                 let awaitDrain: (() => void) | null
 
-                stream.on("drain", () => {
-                    awaitDrain?.()
-                    awaitDrain = null
-                })
+                if (pipelike) {
+                    stream.on("drain", () => {
+                        awaitDrain?.()
+                        awaitDrain = null
+                    })
+                }
                 
                 const getNextChunk = () => {
                     chunkIndex++
@@ -319,16 +321,15 @@ export class YoutubeVideo {
     }
 
     async fetchTokens() {
-        if (cachedTokens || this.tokens) {
-            return cachedTokens ?? this.tokens
+        if (cachedTokens.has(this.html5Player as string) || this.tokens) {
+            return cachedTokens.get(this.html5Player) ?? this.tokens
         }
 
         const request = await axios.get<string>(this.html5Player as string)
 
         const tokens = extractTokens(request.data)
 
-        //@ts-ignore 
-        cachedTokens = tokens
+        cachedTokens.set(this.html5Player as string, tokens)
 
         this.tokens = tokens as string[]
 

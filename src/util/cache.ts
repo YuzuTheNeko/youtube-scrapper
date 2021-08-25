@@ -1,1 +1,1 @@
-export const cachedTokens: string[] | undefined = undefined
+export const cachedTokens: Map<string, string[]> = new Map()
