@@ -1,6 +1,5 @@
 import { PassThrough, Readable, Transform } from "stream"
 import { downloadFromVideo, getVideoInfo } from "../functions"
-import ytdl from "ytdl-core"
 import Speaker from "speaker"
 import prism from "prism-media"
 
@@ -66,8 +65,6 @@ import prism from "prism-media"
             }
 
             waitChunks()
-        } else {
-            const stream = ytdl("gBF2TqxjJSk")
         }
     }
 )()
