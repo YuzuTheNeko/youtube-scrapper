@@ -4,9 +4,7 @@ import m3u8stream from "m3u8stream"
 import querystring from "querystring"
 import { Util } from "../util/Util"
 import { PassThrough } from "stream"
-import { TypeError } from "./TypeError"
 import { cachedTokens } from "../util/cache"
-import { ErrorCodes } from "../util/constants"
 import { download } from "../functions/download"
 import { extractTokens } from "../util/decipher"
 
@@ -168,10 +166,15 @@ export class YoutubeVideo {
     download(format: YoutubeVideoFormat, options: DownloadOptions = {}) {
         if (format.isHLS || format.isDashMPD) {
             return m3u8stream(format.url as string, {
-                begin: options.begin ?? (format.isLive ? Date.now() : 0),
-                highWaterMark: options.highWaterMark ?? 64 * 1024,
+                id: String(format.itag),
                 parser: format.isDashMPD ? "dash-mpd" : "m3u8",
-                id: String(format.itag)
+                highWaterMark: options.highWaterMark ?? 64 * 1024,
+                begin: options.begin ?? (format.isLive ? Date.now() : 0),
+                requestOptions: {
+                    maxReconnects: Infinity,
+                    maxRetries: 10,
+                    backoff: { inc: 20, max: 100 }
+                }
             })
         } else {
             if (options.chunkMode) {
@@ -182,7 +185,7 @@ export class YoutubeVideo {
     
                 let downloadChunkSize = options.chunkMode.chunkSize ?? 256 * 1024
     
-                let endBytes = downloadChunkSize, startBytes = 0, chunkIndex = 0
+                let endBytes = downloadChunkSize, startBytes = 0
 
                 const pipelike = options.pipe ?? true
                 
@@ -196,8 +199,6 @@ export class YoutubeVideo {
                 }
                 
                 const getNextChunk = () => {
-                    chunkIndex++
-    
                     if (endBytes > (format.contentLength as number)) {
                         endBytes = format.contentLength as number
                     }
