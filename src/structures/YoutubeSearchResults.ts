@@ -1,4 +1,5 @@
 import { inspect } from "util"
+import { Util } from ".."
 
 export interface YoutubeSearchVideoInfo {
     id: string
@@ -7,6 +8,7 @@ export interface YoutubeSearchVideoInfo {
         width: string
         height: string
     }[]
+    url: string
     title: string
     publishedTimeAgo?: string
     viewCount: number
@@ -52,6 +54,7 @@ export class YoutubeSearchResults {
                 const formattedViewCount = video.shortViewCountText?.simpleText ?? video.shortViewCountText.runs[0].text
 
                 arr.push({
+                    url: Util.getYTVideoURL() + video.videoId,
                     id: video.videoId, 
                     thumbnails: video.thumbnail.thumbnails, 
                     title: video.title.runs[0].text,

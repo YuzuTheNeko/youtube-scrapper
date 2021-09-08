@@ -97,6 +97,10 @@ export class YoutubeVideo {
         this.json = json
     }
 
+    get url() {
+        return Util.getYTVideoURL() + this.info.id
+    }
+
     get formats(): YoutubeVideoFormat[] {
         const arr = this.moreFormats ?? []
 

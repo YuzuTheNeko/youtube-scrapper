@@ -1,6 +1,6 @@
 # youtube-scrapper
-[![NPM Version](https://img.shields.io/npm/v/water-player.svg?maxAge=3600)](https://www.npmjs.com/package/youtube-scrapper)
-[![NPM Downloads](https://img.shields.io/npm/dt/water-player.svg?maxAge=3600)](https://www.npmjs.com/package/youtube-scrapper)
+[![NPM Version](https://img.shields.io/npm/v/youtube-scrapper.svg?maxAge=3600)](https://www.npmjs.com/package/youtube-scrapper)
+[![NPM Downloads](https://img.shields.io/npm/dt/youtube-scrapper.svg?maxAge=3600)](https://www.npmjs.com/package/youtube-scrapper)
 
 ## Table Of Contents
 - [Installing](#installing)
