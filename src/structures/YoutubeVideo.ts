@@ -343,7 +343,7 @@ export class YoutubeVideo {
 
     get details(): YoutubeVideoDetails {
         return {
-            url: `${Util.getYTVideoURL()}${this.json.videoDetails.videoId}`,
+            url: `${Util.getYTVideoURL()}${this.json.videoDetails?.videoId}`,
             id: this.json.videoDetails.videoId,
             title: this.json.videoDetails.title, 
             duration: Number(this.json.videoDetails.lengthSeconds) * 1000,

@@ -39,7 +39,7 @@ export class Util extends null {
     }
 
     static getId(str: string) {
-        return str.includes("watch?v=") ? str.split("watch?v=")[1].split("&")[0] : str
+        return str.includes("/v/") ? str.split("/v/")[1].split("&")[0] : str.includes("youtube.com/embed/") ? str.split("embed/")[1].split("&")[0] : str.includes("youtu.be/") && !str.includes("/v/") ? str.split("youtu.be/")[1].split("&")[0] : str.includes("watch?v=") ? str.split("watch?v=")[1].split("&")[0] : str
     }
 
     static getListId(str: string) {
