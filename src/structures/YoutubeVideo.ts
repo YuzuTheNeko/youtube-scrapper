@@ -102,7 +102,7 @@ export class YoutubeVideo {
     }
 
     get formats(): YoutubeVideoFormat[] {
-        const arr = this.moreFormats ?? []
+        const arr = [...this.moreFormats] ?? []
 
         for (const format of 
             [].concat(
