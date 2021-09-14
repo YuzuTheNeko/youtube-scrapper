@@ -327,6 +327,7 @@ export class YoutubeVideo {
 
     async fetchTokens() {
         if (cachedTokens.has(this.html5Player as string) || this.tokens) {
+            this.tokens = cachedTokens.get(this.html5Player as string) ?? this.tokens
             return cachedTokens.get(this.html5Player) ?? this.tokens
         }
 
