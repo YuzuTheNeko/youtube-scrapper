@@ -5,8 +5,6 @@ import { Util } from "../util/Util";
 export async function getVideoInfo(urlOrId: string, getPlaylistFormats: boolean = false) {
     const id = Util.getId(urlOrId)
 
-    console.log(id)
-    
     const request = await axios.get<string>(`${Util.getYTVideoURL()}${id}&hl=en`)
 
     const json = JSON.parse(request.data.split("var ytInitialPlayerResponse = ")[1].split(";</script>")[0])
