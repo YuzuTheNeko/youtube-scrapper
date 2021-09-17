@@ -43,7 +43,7 @@ export class Util extends null {
     }
 
     static getListId(str: string) {
-        return str.includes("?list=") ? str.split("?list=")[1].split("&")[0] : str
+        return str.includes("&list=") ? str.split("&list=")[1].split("&")[0] : str.includes("?list=") ? str.split("?list=")[1].split("&")[0] : str
     }
 
     static getBaseYTURL() {
