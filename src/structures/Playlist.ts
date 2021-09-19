@@ -55,6 +55,8 @@ export class Playlist {
     async fetch(): Promise<this> {
         if (!this.tracks.length) await this.fetchFirstPage()
 
+        if (!this.token) return this
+        
         if (!this.token || !this.apiKey) {
             await this.fetchFirstPage()
             if (!this.token) {

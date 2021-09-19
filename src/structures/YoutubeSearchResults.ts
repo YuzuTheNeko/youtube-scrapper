@@ -48,10 +48,10 @@ export class YoutubeSearchResults {
             const video = data.videoRenderer
 
             if (video) {
-                const rawViewCount: string = video.viewCountText.simpleText?.split(" ")[0] ?? video.viewCountText.runs[0].text
+                const rawViewCount: string = video.viewCountText?.simpleText?.split(" ")[0] ?? video.viewCountText?.runs[0]?.text
                 const formattedDuration = video.lengthText?.simpleText ?? "0"
-                const formattedReadableDuration = video.lengthText?.accessibility.accessibilityData.label ?? "0"
-                const formattedViewCount = video.shortViewCountText?.simpleText ?? video.shortViewCountText.runs[0].text
+                const formattedReadableDuration = video.lengthText?.accessibility?.accessibilityData.label ?? "0"
+                const formattedViewCount = video.shortViewCountText?.simpleText ?? video.shortViewCountText?.runs[0]?.text
 
                 arr.push({
                     url: Util.getYTVideoURL() + video.videoId,
