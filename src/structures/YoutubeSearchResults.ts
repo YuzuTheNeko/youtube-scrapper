@@ -63,7 +63,7 @@ export class YoutubeSearchResults {
                         id: video.ownerText.runs[0].navigationEndpoint.commandMetadata.webCommandMetadata.url.split("/").slice(-1)[0],
                         thumbnails: video.channelThumbnailSupportedRenderers.channelThumbnailWithLinkRenderer.thumbnail.thumbnails
                     },
-                    viewCount: Number(rawViewCount.replace(/,/g, "")),
+                    viewCount: rawViewCount ? Number(rawViewCount.replace(/,/g, "")) : 0,
                     publishedTimeAgo: video.publishedTimeText?.simpleText,
                     formattedDuration: formattedDuration,
                     formattedReadableDuration: formattedReadableDuration, 

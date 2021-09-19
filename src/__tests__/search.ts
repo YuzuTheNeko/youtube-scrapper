@@ -1,7 +1,7 @@
 import { search } from "../functions/search";
 
 async function s() {
-  const result = await search('lofi hip hop radio')
+  const result = await search('i')
 
   console.log(result.videos)
 }
