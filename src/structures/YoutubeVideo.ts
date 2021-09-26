@@ -195,18 +195,26 @@ export class YoutubeVideo {
                 
                 let awaitDrain: (() => void) | null
 
+                let request: Miniget.Stream | null
+
                 if (pipelike) {
                     stream.on("drain", () => {
                         awaitDrain?.()
                         awaitDrain = null
                     })
                 }
-                
+
+                stream.once("close", () => {
+                    request?.destroy()
+                    request?.removeAllListeners()
+                    request = null;
+                });
+
                 const getNextChunk = () => {
                     if (endBytes > (format.contentLength as number)) {
                         endBytes = format.contentLength as number
                     }
-                    const request = Miniget(format.url as string, {
+                    request = Miniget(format.url as string, {
                         headers: {
                             Range: `bytes=${startBytes}-${endBytes}`
                         }
@@ -214,13 +222,13 @@ export class YoutubeVideo {
 
                     // Handle unknown 403 errors accordinly.
                     request.once("error", error => {
-                        try { request.destroy() } catch { }
+                        request.destroy()
                         if (error.message.includes("403")) {
                             request.removeAllListeners()
                             options.resource = stream
                             download(this.details.url)
                         } else {
-                            throw error
+                            stream.destroy(error)
                         }
                     })
     
@@ -257,21 +265,24 @@ export class YoutubeVideo {
             } else {
                 const stream = new PassThrough({ highWaterMark: format.contentLength })
 
-                const request = Miniget(format.url as string) 
+                const request = Miniget(format.url as string)
 
                 request.once("error", error => {
+                    request.destroy()
                     if (error.message.includes("403")) {
                         request.removeAllListeners()
                         options.resource = stream
                         download(this.details.url)
                     } else {
-                        throw error
+                        stream.destroy(error)
                     }
-                    request.destroy()
                 })
 
-                request.once("end", request.destroy)
-                stream.once("end", stream.destroy)
+                stream.once("close", () => {
+                    request.unpipe(stream)
+                    request.destroy()
+                    request.removeAllListeners()
+                });
 
                 request.pipe(stream)
 
