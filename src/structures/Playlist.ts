@@ -109,7 +109,7 @@ export class Playlist {
             throw new TypeError(ErrorCodes.PLAYLIST_LOAD_FAILED)
         }
 
-        const res = Util.getBetween(request.data, "var ytInitialData = ", ";</script>")
+        const res = /var\s+ytInitialData\s*=\s*({.+?});/.exec(request.data)[1]
 
         if (!res) {
             throw new TypeError(ErrorCodes.PLAYLIST_LOAD_FAILED)
@@ -119,7 +119,7 @@ export class Playlist {
 
         const apiKey = Regexes.YOUTUBE_API_KEY.exec(request.data)?.[2]
 
-        const version = Util.getBetween(request.data, '"INNERTUBE_CONTEXT_CLIENT_VERSION":"', '"')
+        const version = /"INNERTUBE_CONTEXT_CLIENT_VERSION"\s*:\s*"(.+?)"/.exec(request.data)[1]
 
         if (!version || !apiKey) {
             if (!version) {

@@ -19,13 +19,7 @@ export async function search(query: string) {
     }
 
     try {
-        const json = JSON.parse(
-            Util.getBetween(
-                request.data,
-                `var ytInitialData = `,
-                `;</script>`
-            )
-        )
+        const json = JSON.parse(/var\s+ytInitialData\s*=\s*({.+?});/.exec(request.data)[1])
 
         return new YoutubeSearchResults(json)
     } catch (error: any) {

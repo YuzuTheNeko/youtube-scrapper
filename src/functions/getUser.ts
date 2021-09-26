@@ -10,13 +10,7 @@ import { Util } from "../util/Util";
 export async function getUser(id: string) {
     const request = await axios.get<string>(`${Util.getYTUserURL()}/${id}?hl=en`)
 
-    const json = JSON.parse(
-        Util.getBetween(
-            request.data,
-            `var ytInitialData = `,
-            ";</script>"
-        )
-    )
+    const json = JSON.parse(/var\s+ytInitialData\s*=\s*({.+?});/.exec(request.data)[1])
 
     return new YoutubeChannel(json)
 }

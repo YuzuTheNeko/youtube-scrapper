@@ -14,10 +14,6 @@ export class Util extends null {
         return "https://www.youtube.com/watch?v="
     }
 
-    static getBetween<K = undefined>(body: string, one: string, two: string): K extends undefined ? string | undefined : K {
-        return body.split(one)[1]?.split(two)[0] as K extends undefined ? string | undefined : K
-    }
-
     static getYTChannelURL() {
         return `https://youtube.com/channel`
     }

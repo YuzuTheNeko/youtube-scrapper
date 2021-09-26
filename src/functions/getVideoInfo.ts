@@ -7,7 +7,7 @@ export async function getVideoInfo(urlOrId: string, getPlaylistFormats: boolean 
 
     const request = await axios.get<string>(`${Util.getYTVideoURL()}${id}&hl=en`)
 
-    const json = JSON.parse(request.data.split("var ytInitialPlayerResponse = ")[1].split(";</script>")[0])
+    const json = JSON.parse(/var\s+ytInitialPlayerResponse\s*=\s*({.+?});/.exec(request.data)[1])
 
     if (json.playabilityStatus?.status === "ERROR") {
         throw Error(json.playabilityStatus.reason)
