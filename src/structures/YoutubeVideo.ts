@@ -226,7 +226,7 @@ export class YoutubeVideo {
                         if (error.message.includes("403")) {
                             request.removeAllListeners()
                             options.resource = stream
-                            download(this.details.url)
+                            download(this.details.url, undefined, options)
                         } else {
                             stream.destroy(error)
                         }
@@ -272,7 +272,7 @@ export class YoutubeVideo {
                     if (error.message.includes("403")) {
                         request.removeAllListeners()
                         options.resource = stream
-                        download(this.details.url)
+                        download(this.details.url, undefined, options)
                     } else {
                         stream.destroy(error)
                     }
