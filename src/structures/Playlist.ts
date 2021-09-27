@@ -119,7 +119,7 @@ export class Playlist {
 
         const apiKey = Regexes.YOUTUBE_API_KEY.exec(request.data)?.[2]
 
-        const version = /"INNERTUBE_CONTEXT_CLIENT_VERSION"\s*:\s*"(.+?)"/.exec(request.data)[1]
+        const version = Regexes.INNERTUBE_CLIENT_VERSION.exec(request.data)?.[1]
 
         if (!version || !apiKey) {
             if (!version) {
