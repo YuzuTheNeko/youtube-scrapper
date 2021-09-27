@@ -7,7 +7,7 @@ export class Util extends null {
     constructor() {}
 
     static getBaseYTURL() {
-        return `https://youtube.com`
+        return "https://youtube.com"
     }
 
     static getYTSearchURL() {
@@ -35,7 +35,7 @@ export class Util extends null {
     }
 
     static getYTApiBaseURL() {
-        return `https://www.youtube.com/youtubei/v1`
+        return "https://www.youtube.com/youtubei/v1"
     }
 
     static getId(str: string) {

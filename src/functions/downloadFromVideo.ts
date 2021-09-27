@@ -10,7 +10,7 @@ export function downloadFromVideo(video: YoutubeVideo, format?: YoutubeVideoForm
     if (!format) format = video.formats.find(c => c.quality !== "LOW")
     
     if (!format) {
-        throw new Error(`Could not find suitable format for this download.`)
+        throw new Error("Could not find suitable format for this download.")
     }
 
     return video.download(format, options)

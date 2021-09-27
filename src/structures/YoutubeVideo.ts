@@ -105,11 +105,11 @@ export class YoutubeVideo {
         const arr = [...this.moreFormats] ?? []
 
         for (const format of 
-            [].concat(
-                this.json.streamingData?.adaptiveFormats ?? [],
-                this.json.streamingData?.formats ?? []
-            ) as any[]) {
-            
+            [
+                ...(this.json.streamingData?.adaptiveFormats ?? []),
+                ...(this.json.streamingData?.formats ?? [])
+            ] as any[]) {
+
             let frmt: YoutubeVideoFormat = {
                 itag: format.itag, 
                 mimeType: format.mimeType,

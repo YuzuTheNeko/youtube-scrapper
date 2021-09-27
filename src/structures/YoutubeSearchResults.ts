@@ -154,14 +154,14 @@ export class YoutubeSearchResults {
 
             if (channel) {
                 const rawSubscriberCount: string = channel.subscriberCountText?.simpleText ?? "0"
-                const badge = data.channelRenderer.ownerBadges?.[0]
+                const badge = channel.ownerBadges?.[0]
 
                 arr.push({
                     url: `${Util.getYTChannelURL()}/${channel.channelId}`,
                     id: channel.channelId, 
                     thumbnails: channel.thumbnail.thumbnails, 
                     title: channel.title.simpleText,
-                    verified: Boolean(badge?.metadataBadgeRenderer?.style?.includes('VERIFIED')),
+                    verified: Boolean(badge?.metadataBadgeRenderer?.style?.includes("VERIFIED")),
                     subscriberCount: Number(rawSubscriberCount)
                 })
             }
