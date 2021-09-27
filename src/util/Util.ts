@@ -6,6 +6,10 @@ import axios from "axios"
 export class Util extends null {
     constructor() {}
 
+    static getBaseYTURL() {
+        return `https://youtube.com`
+    }
+
     static getYTSearchURL() {
         return "https://www.youtube.com/results"
     }
@@ -15,7 +19,7 @@ export class Util extends null {
     }
 
     static getYTChannelURL() {
-        return `https://youtube.com/channel`
+        return `${Util.getBaseYTURL()}/channel`
     }
 
     static getYTTrendingURL() {
@@ -23,7 +27,7 @@ export class Util extends null {
     }
 
     static getYTUserURL() {
-        return `https://youtube.com/user`
+        return `${Util.getBaseYTURL()}/user`
     }
 
     static getYTPlaylistURL() {
@@ -40,10 +44,6 @@ export class Util extends null {
 
     static getListId(str: string) {
         return str.includes("&list=") ? str.split("&list=")[1].split("&")[0] : str.includes("?list=") ? str.split("?list=")[1].split("&")[0] : str
-    }
-
-    static getBaseYTURL() {
-        return `https://youtube.com`
     }
 
     static swapSignatureArray(arr: string[], position: number): string[] {

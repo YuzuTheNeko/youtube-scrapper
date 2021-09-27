@@ -1,4 +1,3 @@
-import { inspect } from "util"
 import { Util } from ".."
 
 export interface YoutubeSearchVideoInfo {
@@ -26,6 +25,36 @@ export interface YoutubeSearchVideoInfo {
             height: number
         }[]
     }
+}
+
+export interface YoutubeSearchListInfo {
+    id: string
+    thumbnails: {
+        url: string
+        width: string
+        height: string
+    }[]
+    url: string
+    title: String
+    channel: {
+        name: string
+        id: string
+        url: string
+    },
+    videoCount: number
+}
+
+export interface YoutubeSearchChannelInfo {
+    id: string
+    thumbnails: {
+        url: string
+        width: string
+        height: string
+    }[]
+    url: string
+    title: String
+    verified: Boolean
+    subscriberCount: number
 }
 
 export class YoutubeSearchResults {
@@ -81,6 +110,59 @@ export class YoutubeSearchResults {
                         }
                         return n 
                     })() : 0
+                })
+            }
+        }
+
+        return arr
+    }
+
+    get playlists(): YoutubeSearchListInfo[] {
+        const arr: YoutubeSearchListInfo[] = []
+
+        const playlists = this.json.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer.contents[0].itemSectionRenderer.contents
+
+        for (const data of playlists) {
+            const list = data.playlistRenderer
+
+            if (list) {
+                arr.push({
+                    url: `${Util.getYTPlaylistURL()}?list=${list.playlistId}`,
+                    id: list.playlistId, 
+                    thumbnails: list.thumbnails, 
+                    title: list.title.simpleText,
+                    channel: {
+                        name: list.shortBylineText.runs[0].text, 
+                        id: list.shortBylineText.runs[0].navigationEndpoint.browseEndpoint.browseId,
+                        url: `${Util.getYTChannelURL()}/${list.shortBylineText.runs[0].navigationEndpoint.browseEndpoint.browseId}`
+                    },
+                    videoCount: Number(list.videoCount.replace(/\D/g, ""))
+                })
+            }
+        }
+
+        return arr
+    }
+
+    get channels(): YoutubeSearchChannelInfo[] {
+        const arr: YoutubeSearchChannelInfo[] = []
+
+        const channels = this.json.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer.contents[0].itemSectionRenderer.contents
+
+        for (const data of channels) {
+            const channel = data.channelRenderer
+
+            if (channel) {
+                const rawSubscriberCount: string = channel.subscriberCountText?.simpleText ?? "0"
+                const badge = data.channelRenderer.ownerBadges?.[0]
+
+                arr.push({
+                    url: `${Util.getYTChannelURL()}/${channel.channelId}`,
+                    id: channel.channelId, 
+                    thumbnails: channel.thumbnail.thumbnails, 
+                    title: channel.title.simpleText,
+                    verified: Boolean(badge?.metadataBadgeRenderer?.style?.includes('VERIFIED')),
+                    subscriberCount: Number(rawSubscriberCount)
                 })
             }
         }
