@@ -207,8 +207,8 @@ export class YoutubeVideo {
                 stream.once("close", () => {
                     request?.destroy()
                     request?.removeAllListeners()
-                    request = null;
-                });
+                    request = null
+                })
 
                 const getNextChunk = () => {
                     if (endBytes > (format.contentLength as number)) {
@@ -270,6 +270,7 @@ export class YoutubeVideo {
                 request.once("error", error => {
                     request.destroy()
                     if (error.message.includes("403")) {
+                        request.unpipe(stream)
                         request.removeAllListeners()
                         options.resource = stream
                         download(this.details.url, undefined, options)
@@ -279,10 +280,10 @@ export class YoutubeVideo {
                 })
 
                 stream.once("close", () => {
-                    request.unpipe(stream)
                     request.destroy()
+                    request.unpipe(stream)
                     request.removeAllListeners()
-                });
+                })
 
                 request.pipe(stream)
 

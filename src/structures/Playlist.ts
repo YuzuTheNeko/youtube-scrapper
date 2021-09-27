@@ -109,7 +109,7 @@ export class Playlist {
             throw new TypeError(ErrorCodes.PLAYLIST_LOAD_FAILED)
         }
 
-        const res = /var\s+ytInitialData\s*=\s*({.+?});/.exec(request.data)[1]
+        const res = /var\s+ytInitialData\s*=\s*({.+?});/.exec(request.data)?.[1]
 
         if (!res) {
             throw new TypeError(ErrorCodes.PLAYLIST_LOAD_FAILED)
