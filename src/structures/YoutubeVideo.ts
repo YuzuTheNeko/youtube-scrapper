@@ -174,6 +174,7 @@ export class YoutubeVideo {
                 parser: format.isDashMPD ? "dash-mpd" : "m3u8",
                 highWaterMark: options.highWaterMark ?? 64 * 1024,
                 begin: options.begin ?? (format.isLive ? Date.now() : 0),
+                liveBuffer: 4000,
                 requestOptions: {
                     maxReconnects: Infinity,
                     maxRetries: 10,
@@ -225,6 +226,7 @@ export class YoutubeVideo {
                         request.destroy()
                         if (error.message.includes("403")) {
                             request.removeAllListeners()
+                            request = null
                             options.resource = stream
                             download(this.details.url, undefined, options)
                         } else {
@@ -267,6 +269,12 @@ export class YoutubeVideo {
 
                 const request = Miniget(format.url as string)
 
+                stream.once("close", () => {
+                    request.destroy()
+                    request.unpipe(stream)
+                    request.removeAllListeners()
+                })
+
                 request.once("error", error => {
                     request.destroy()
                     if (error.message.includes("403")) {
@@ -277,12 +285,6 @@ export class YoutubeVideo {
                     } else {
                         stream.destroy(error)
                     }
-                })
-
-                stream.once("close", () => {
-                    request.destroy()
-                    request.unpipe(stream)
-                    request.removeAllListeners()
                 })
 
                 request.pipe(stream)

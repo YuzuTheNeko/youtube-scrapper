@@ -66,7 +66,7 @@ export class Util extends null {
 
     static async dashMpdFormat(url: string): Promise<YoutubeVideoFormat[]> {
         const moreFormats: YoutubeVideoFormat[] = []
-        const xmlData = await axios.get<string>(new URL(url, this.getYTVideoURL()).toString())
+        const xmlData = await axios.get<string>(new URL(url, Util.getYTVideoURL()).toString())
         const xml = xmlParse(xmlData.data, {
             attributeNamePrefix: "$",
             ignoreAttributes: false
@@ -91,7 +91,7 @@ export class Util extends null {
                         format.fps = Number(representation["$frameRate"])
                     }
 
-                    moreFormats.push(this.addMetadataToFormat(format))
+                    moreFormats.push(Util.addMetadataToFormat(format))
                 }
             }
         }
@@ -101,7 +101,7 @@ export class Util extends null {
 
     static async m3u8Format(url: string): Promise<YoutubeVideoFormat[]> {
         const moreFormats: YoutubeVideoFormat[] = []
-        const { data } = await axios.get<string>(new URL(url, this.getYTVideoURL()).toString())
+        const { data } = await axios.get<string>(new URL(url, Util.getYTVideoURL()).toString())
 
         for (const line of data.split("\n")) {
             if (!/^https?:\/\//.test(line)) continue
@@ -117,7 +117,7 @@ export class Util extends null {
                     codec: reservedFormat.mimeType.split("\"")[1].split("\"")[0]
                 }
 
-                moreFormats.push(this.addMetadataToFormat(format))
+                moreFormats.push(Util.addMetadataToFormat(format))
             }
         }
 

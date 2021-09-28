@@ -2,7 +2,7 @@ import axios from "axios";
 import { YoutubeVideo, YoutubeVideoFormat } from "../structures/YoutubeVideo";
 import { Util } from "../util/Util";
 
-export async function getVideoInfo(urlOrId: string, getPlaylistFormats: boolean = false) {
+export async function getVideoInfo(urlOrId: string) {
     const id = Util.getId(urlOrId)
 
     const request = await axios.get<string>(`${Util.getYTVideoURL()}${id}&hl=en`)
@@ -16,23 +16,21 @@ export async function getVideoInfo(urlOrId: string, getPlaylistFormats: boolean 
     const video = new YoutubeVideo(json)
 
     video.getHtml5Player(request.data)
-
-    const pending: Promise<unknown>[] = []
-
-    pending.push(video.fetchTokens())
+    await video.fetchTokens()
 
     const moreFormats: YoutubeVideoFormat[] = []
     const dashMpdUrl = video['json'].streamingData?.dashManifestUrl
     const m3u8Url = video['json'].streamingData?.hlsManifestUrl
 
-    if (getPlaylistFormats) {
+    if (video.details.isLiveContent && video.details.duration === 0 && m3u8Url) {
+        const pending: Promise<unknown>[] = []
         if (dashMpdUrl) pending.push(Util.dashMpdFormat(dashMpdUrl))
         if (m3u8Url) pending.push(Util.m3u8Format(m3u8Url))
+
+        const resolved = await Promise.all(pending)
+
+        for (const moreFormat of resolved) moreFormats.push(...moreFormat as YoutubeVideoFormat[])
     }
-
-    const resolved = await Promise.all(pending)
-
-    for (const moreFormat of resolved.slice(1)) moreFormats.push(...moreFormat as YoutubeVideoFormat[])
 
     video.moreFormats = moreFormats
 

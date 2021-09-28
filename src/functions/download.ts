@@ -14,14 +14,9 @@ export async function download(urlOrId: string, format?: YoutubeVideoFormat, opt
         // If a format was provided, we can just use it instead.
         return downloadFromVideo(video, format, options)
     } else {
-        // This format is suitable for music bots.
-        const opus = video.formats.find(c => c.codec === "opus" && c.hasAudio && c.url && !c.hasVideo)
+        // This format is suitable for live video or music bots.
+        const liveOrOpus = video.formats.find(c => c.isLive ? c.isHLS : (c.codec === "opus" && c.hasAudio && !c.hasVideo))
 
-        if (opus) {
-            return downloadFromVideo(video, opus, options)
-        } else {
-            // This will last available format.
-            return downloadFromVideo(video, video.formats[video.formats.length - 1], options)
-        }
+        return downloadFromVideo(video, liveOrOpus ?? video.formats[video.formats.length - 1], options)
     }
 }
