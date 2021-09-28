@@ -1,9 +1,9 @@
-import { search } from "../functions/search";
+import { search } from '../functions/search';
 
 async function s() {
-  const result = await search('i')
+    const result = await search('i');
 
-  console.log(result.results)
+    console.log(result.results);
 }
 
-s()
+s();

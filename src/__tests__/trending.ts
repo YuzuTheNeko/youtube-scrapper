@@ -1,6 +1,5 @@
-import { getYoutubeTrending } from "../functions/getYoutubeTrending";
+import { getYoutubeTrending } from '../functions/getYoutubeTrending';
 
-getYoutubeTrending()
-.then(trending  => {
-    console.log(trending.videos)
-})
+getYoutubeTrending().then((trending) => {
+    console.log(trending.videos);
+});

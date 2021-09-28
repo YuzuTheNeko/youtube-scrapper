@@ -1,3 +1,3 @@
-export * from "./functions"
-export * from "./structures"
-export * from "./util"
+export * from './functions';
+export * from './structures';
+export * from './util';

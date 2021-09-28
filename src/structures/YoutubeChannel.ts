@@ -1,44 +1,44 @@
-import { Util } from "../util/Util"
+import { Util } from '../util/Util';
 
 export interface YoutubeChannelInfo {
-    title: string
+    title: string;
     avatars: {
-        url: string
-        height: number
-        width?: number
-    }[]
+        url: string;
+        height: number;
+        width?: number;
+    }[];
     banners: {
-        url: string
-        height: number
-        width?: number
-    }[]
-    subscriberFormattedCount: string
-    channelId: string
-    availableCountryCodes: string[]
-    isFamilySafe: boolean
-    keywords: string
-    description: string
-    rssUrl: string
+        url: string;
+        height: number;
+        width?: number;
+    }[];
+    subscriberFormattedCount: string;
+    channelId: string;
+    availableCountryCodes: string[];
+    isFamilySafe: boolean;
+    keywords: string;
+    description: string;
+    rssUrl: string;
 }
 
 export class YoutubeChannel {
-    private json: any
+    private json: any;
 
     constructor(json: any) {
-        this.json = json
+        this.json = json;
     }
 
     get url() {
-        return `${Util.getYTChannelURL()}/${this.details.channelId}`
+        return `${Util.getYTChannelURL()}/${this.details.channelId}`;
     }
 
     get<K extends keyof YoutubeChannelInfo>(key: K): YoutubeChannelInfo[K] {
-        return this.details[key]
+        return this.details[key];
     }
 
     get details(): YoutubeChannelInfo {
-        const header = this.json.header.c4TabbedHeaderRenderer
-        const metadata = this.json.metadata.channelMetadataRenderer
+        const header = this.json.header.c4TabbedHeaderRenderer;
+        const metadata = this.json.metadata.channelMetadataRenderer;
 
         return {
             channelId: header.channelId,
@@ -51,6 +51,6 @@ export class YoutubeChannel {
             isFamilySafe: metadata.isFamilySafe,
             availableCountryCodes: metadata.availableCountryCodes,
             subscriberFormattedCount: header.subscriberCountText.simpleText
-        }
+        };
     }
 }

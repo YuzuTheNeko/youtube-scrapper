@@ -1,6 +1,7 @@
-import axios from "axios";
-import { YoutubeChannel } from "../structures/YoutubeChannel";
-import { Util } from "../util/Util";
+import axios from 'axios';
+import { YoutubeChannel } from '../structures/YoutubeChannel';
+import * as Regexes from '../util/Regexes';
+import { Util } from '../util/Util';
 
 /**
  * Gets a user's channel data, behaves same as getChannel method but it uses the author name or id.
@@ -8,9 +9,9 @@ import { Util } from "../util/Util";
  * @returns
  */
 export async function getUser(id: string) {
-    const request = await axios.get<string>(`${Util.getYTUserURL()}/${id}?hl=en`)
+    const request = await axios.get<string>(`${Util.getYTUserURL()}/${id}?hl=en`);
 
-    const json = JSON.parse(/var\s+ytInitialData\s*=\s*({.+?});/.exec(request.data)[1])
+    const json = JSON.parse(Regexes.YOUTUBE_INITIAL_DATA.exec(request.data)[1]);
 
-    return new YoutubeChannel(json)
+    return new YoutubeChannel(json);
 }

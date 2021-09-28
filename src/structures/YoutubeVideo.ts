@@ -1,119 +1,118 @@
-import axios from "axios"
-import Miniget from "miniget"
-import m3u8stream from "m3u8stream"
-import querystring from "querystring"
-import { Util } from "../util/Util"
-import { PassThrough } from "stream"
-import { cachedTokens } from "../util/cache"
-import { download } from "../functions/download"
-import { extractTokens } from "../util/decipher"
+import axios from 'axios';
+import Miniget from 'miniget';
+import m3u8stream from 'm3u8stream';
+import querystring from 'querystring';
+import * as Regexes from '../util/Regexes';
+import { Util } from '../util/Util';
+import { PassThrough } from 'stream';
+import { cachedTokens } from '../util/cache';
+import { download } from '../functions/download';
+import { extractTokens } from '../util/decipher';
 
 export interface YoutubeVideoDetails {
-    url: string
-    id: string
-    title: string
-    duration: number
-    keywords: string[]
-    channelId: string
-    isOwnerViewing: boolean
-    shortDescription: string
-    isCrawlable: boolean
+    url: string;
+    id: string;
+    title: string;
+    duration: number;
+    keywords: string[];
+    channelId: string;
+    isOwnerViewing: boolean;
+    shortDescription: string;
+    isCrawlable: boolean;
     thumbnails: {
-        url: string
-        height: string
-        width: string
-    }[]
-    averageRating: number
-    allowRatings: boolean
-    viewCount: number
-    author: string
-    isPrivate: boolean
-    isUnpluggedCorpus: boolean
-    isLiveContent: boolean
+        url: string;
+        height: string;
+        width: string;
+    }[];
+    averageRating: number;
+    allowRatings: boolean;
+    viewCount: number;
+    author: string;
+    isPrivate: boolean;
+    isUnpluggedCorpus: boolean;
+    isLiveContent: boolean;
 }
 
 export interface YoutubeVideoFormat {
-    itag: number
-    mimeType: string
-    codec: string
-    type: string
-    bitrate: number | null
-    width?: number
-    height?: number
+    itag: number;
+    mimeType: string;
+    codec: string;
+    type: string;
+    bitrate: number | null;
+    width?: number;
+    height?: number;
     initRange?: {
-        start: number
-        end: number
-    }
+        start: number;
+        end: number;
+    };
     indexRange?: {
-        start: number
-        end: number
-    }
-    lastModifiedTimestamp?: number
-    contentLength?: number
-    quality?: string
-    audioChannels?: number
-    audioSampleRate?: number
-    loudnessDb?: number
-    s?: string
-    sp?: string
-    url: string
-    fps?: number
-    qualityLabel: string | null
-    projectionType?: "RECTANGULAR",
-    averageBitrate?: number
-    approxDurationMs?: number
-    signatureCipher?: string
-    getDecodedCipher?: () => string | undefined
+        start: number;
+        end: number;
+    };
+    lastModifiedTimestamp?: number;
+    contentLength?: number;
+    quality?: string;
+    audioChannels?: number;
+    audioSampleRate?: number;
+    loudnessDb?: number;
+    s?: string;
+    sp?: string;
+    url: string;
+    fps?: number;
+    qualityLabel: string | null;
+    projectionType?: 'RECTANGULAR';
+    averageBitrate?: number;
+    approxDurationMs?: number;
+    signatureCipher?: string;
+    getDecodedCipher?: () => string | undefined;
 
     /* Provided by itag format. */
-    audioBitrate?: number | null
+    audioBitrate?: number | null;
 
     /* These come from metadata and not by youtube. */
-    hasAudio?: boolean
-    hasVideo?: boolean
-    isLive?: boolean
-    isHLS?: boolean
-    isDashMPD?: boolean
+    hasAudio?: boolean;
+    hasVideo?: boolean;
+    isLive?: boolean;
+    isHLS?: boolean;
+    isDashMPD?: boolean;
 }
 
 export interface DownloadOptions {
     chunkMode?: {
-        chunkSize?: number
-    }
-    highWaterMark?: number
-    resource?: PassThrough,
-    begin?: number | string
-    pipe?: boolean
+        chunkSize?: number;
+    };
+    highWaterMark?: number;
+    resource?: PassThrough;
+    begin?: number | string;
+    pipe?: boolean;
 }
 
 export class YoutubeVideo {
-    private json: any
+    private json: any;
 
-    moreFormats?: YoutubeVideoFormat[]
-    html5Player?: string
-    tokens?: string[]
+    moreFormats?: YoutubeVideoFormat[];
+    html5Player?: string;
+    tokens?: string[];
 
     constructor(json: any) {
-        this.json = json
+        this.json = json;
     }
 
     get url() {
-        return `${Util.getYTVideoURL()}${this.info.id}`
+        return `${Util.getYTVideoURL()}${this.info.id}`;
     }
 
     get formats(): YoutubeVideoFormat[] {
-        const arr = [...this.moreFormats] ?? []
+        const arr = [...this.moreFormats] ?? [];
 
-        for (const format of
-            [
-                ...(this.json.streamingData?.adaptiveFormats ?? []),
-                ...(this.json.streamingData?.formats ?? [])
-            ] as any[]) {
-
+        for (const format of [
+            ...(this.json.streamingData?.adaptiveFormats ?? []),
+            ...(this.json.streamingData?.formats ?? [])
+        ] as any[]) {
             let frmt: YoutubeVideoFormat = {
                 itag: format.itag,
                 mimeType: format.mimeType,
-                type: format.mimeType.split(";")[0],
+                type: format.mimeType.split(';')[0],
                 codec: format.mimeType.split('"')[1].split('"')[0],
                 bitrate: format.bitrate,
                 width: format.width,
@@ -136,42 +135,40 @@ export class YoutubeVideo {
                 averageBitrate: format.averageBitrate,
                 approxDurationMs: Number(format.approxDurationMs),
                 signatureCipher: format.signatureCipher ?? format.cipher,
-                getDecodedCipher: () => decodeURIComponent(format.signatureCipher),
-            }
+                getDecodedCipher: () => decodeURIComponent(format.signatureCipher)
+            };
 
             if (format.url && !frmt.signatureCipher) {
-                frmt.url = format.url
+                frmt.url = format.url;
             }
 
             if (!frmt.url) {
-                frmt = Object.assign(frmt, querystring.parse(frmt.signatureCipher as string))
+                frmt = Object.assign(frmt, querystring.parse(frmt.signatureCipher as string));
             }
 
-            let sig = this.tokens && frmt.s ? YoutubeVideo.decipher(this.tokens, frmt.s) : undefined
+            let sig = this.tokens && frmt.s ? YoutubeVideo.decipher(this.tokens, frmt.s) : undefined;
 
-            const url = new URL(decodeURIComponent(frmt.url as string))
+            const url = new URL(decodeURIComponent(frmt.url as string));
 
-            url.searchParams.set("ratebypass", "yes")
+            url.searchParams.set('ratebypass', 'yes');
 
             if (sig) {
-                url.searchParams.set(frmt.sp ?? "signature", sig)
+                url.searchParams.set(frmt.sp ?? 'signature', sig);
             }
 
-            frmt.url = url.toString()
+            frmt.url = url.toString();
 
-            arr.push(
-                Util.addMetadataToFormat(frmt)
-            )
+            arr.push(Util.addMetadataToFormat(frmt));
         }
 
-        return arr
+        return arr;
     }
 
     download(format: YoutubeVideoFormat, options: DownloadOptions = {}) {
         if (format.isHLS || format.isDashMPD) {
             return m3u8stream(format.url as string, {
                 id: String(format.itag),
-                parser: format.isDashMPD ? "dash-mpd" : "m3u8",
+                parser: format.isDashMPD ? 'dash-mpd' : 'm3u8',
                 highWaterMark: options.highWaterMark ?? 64 * 1024,
                 begin: options.begin ?? (format.isLive ? Date.now() : 0),
                 liveBuffer: 4000,
@@ -180,180 +177,183 @@ export class YoutubeVideo {
                     maxRetries: 10,
                     backoff: { inc: 20, max: 100 }
                 }
-            })
+            });
         } else {
             if (options.chunkMode) {
-                const stream = options.resource ?? new PassThrough({
-                    // Set watermark to 64KB (default) for chunking.
-                    highWaterMark: options.highWaterMark ?? 64 * 1024
-                })
+                const stream =
+                    options.resource ??
+                    new PassThrough({
+                        // Set watermark to 64KB (default) for chunking.
+                        highWaterMark: options.highWaterMark ?? 64 * 1024
+                    });
 
-                let downloadChunkSize = options.chunkMode.chunkSize ?? 256 * 1024
+                let downloadChunkSize = options.chunkMode.chunkSize ?? 256 * 1024;
 
-                let endBytes = downloadChunkSize, startBytes = 0
+                let endBytes = downloadChunkSize,
+                    startBytes = 0;
 
-                const pipelike = options.pipe ?? true
+                const pipelike = options.pipe ?? true;
 
-                let awaitDrain: (() => void) | null
+                let awaitDrain: (() => void) | null;
 
-                let request: Miniget.Stream | null
+                let request: Miniget.Stream | null;
 
                 if (pipelike) {
-                    stream.on("drain", () => {
-                        awaitDrain?.()
-                        awaitDrain = null
-                    })
+                    stream.on('drain', () => {
+                        awaitDrain?.();
+                        awaitDrain = null;
+                    });
                 }
 
-                stream.once("close", () => {
-                    request?.destroy()
-                    request?.removeAllListeners()
-                    request = null
-                })
+                stream.once('close', () => {
+                    request?.destroy();
+                    request?.removeAllListeners();
+                    request = null;
+                });
 
                 const getNextChunk = () => {
                     if (endBytes > (format.contentLength as number)) {
-                        endBytes = format.contentLength as number
+                        endBytes = format.contentLength as number;
                     }
                     request = Miniget(format.url as string, {
                         headers: {
                             Range: `bytes=${startBytes}-${endBytes}`
                         }
-                    })
+                    });
 
                     // Handle unknown 403 errors accordinly.
-                    request.once("error", error => {
-                        request.destroy()
-                        if (error.message.includes("403")) {
-                            request.removeAllListeners()
-                            request = null
-                            options.resource = stream
-                            download(this.details.url, undefined, options)
+                    request.once('error', (error) => {
+                        request.destroy();
+                        if (error.message.includes('403')) {
+                            request.removeAllListeners();
+                            request = null;
+                            options.resource = stream;
+                            download(this.details.url, undefined, options);
                         } else {
-                            stream.destroy(error)
+                            stream.destroy(error);
                         }
-                    })
+                    });
 
-                    request.on("data", (chunk: Buffer) => {
+                    request.on('data', (chunk: Buffer) => {
                         if (stream.destroyed) {
-                            request.destroy()
+                            request.destroy();
                             return;
                         }
-                        startBytes += chunk.length
+                        startBytes += chunk.length;
 
                         if (pipelike) {
                             if (!stream.write(chunk)) {
-                                request.pause()
-                                awaitDrain = () => request.resume()
+                                request.pause();
+                                awaitDrain = () => request.resume();
                             }
                         } else {
-                            stream.write(chunk)
+                            stream.write(chunk);
                         }
-                    })
+                    });
 
-                    request.once("end", () => {
+                    request.once('end', () => {
                         if (stream.destroyed) return;
                         if (endBytes === format.contentLength) {
                             return;
                         }
-                        endBytes = startBytes + downloadChunkSize
-                        getNextChunk()
-                    })
-                }
+                        endBytes = startBytes + downloadChunkSize;
+                        getNextChunk();
+                    });
+                };
 
-                getNextChunk()
+                getNextChunk();
 
-                return stream
+                return stream;
             } else {
-                const stream = new PassThrough({ highWaterMark: format.contentLength })
+                const stream = new PassThrough({ highWaterMark: format.contentLength });
 
-                const request = Miniget(format.url as string)
+                const request = Miniget(format.url as string);
 
-                stream.once("close", () => {
-                    request.destroy()
-                    request.unpipe(stream)
-                    request.removeAllListeners()
-                })
+                stream.once('close', () => {
+                    request.destroy();
+                    request.unpipe(stream);
+                    request.removeAllListeners();
+                });
 
-                request.once("error", error => {
-                    request.destroy()
-                    if (error.message.includes("403")) {
-                        request.unpipe(stream)
-                        request.removeAllListeners()
-                        options.resource = stream
-                        download(this.details.url, undefined, options)
+                request.once('error', (error) => {
+                    request.destroy();
+                    if (error.message.includes('403')) {
+                        request.unpipe(stream);
+                        request.removeAllListeners();
+                        options.resource = stream;
+                        download(this.details.url, undefined, options);
                     } else {
-                        stream.destroy(error)
+                        stream.destroy(error);
                     }
-                })
+                });
 
-                request.pipe(stream)
+                request.pipe(stream);
 
-                return stream
+                return stream;
             }
         }
     }
 
     static decipher(tokens: string[], sig: string): string {
-        let arr = sig.split("")
+        let arr = sig.split('');
 
-        for (let i = 0;i < tokens.length;i++) {
-            const token = tokens[i]
+        for (let i = 0; i < tokens.length; i++) {
+            const token = tokens[i];
             let position;
 
-            switch(token[0]) {
+            switch (token[0]) {
                 case 'r':
-                    arr = arr.reverse()
-                    break
+                    arr = arr.reverse();
+                    break;
                 case 'w':
-                    position = ~~token.slice(1)
-                    arr = Util.swapSignatureArray(arr, position)
-                    break
+                    position = ~~token.slice(1);
+                    arr = Util.swapSignatureArray(arr, position);
+                    break;
                 case 's':
                     position = ~~token.slice(1);
                     arr = arr.slice(position);
-                    break
+                    break;
                 case 'p':
                     position = ~~token.slice(1);
                     arr.splice(0, position);
-                    break
+                    break;
             }
         }
 
-        return arr.join('')
+        return arr.join('');
     }
 
     get info(): YoutubeVideoDetails & { formats: YoutubeVideoFormat[] } {
-        const details = this.details
+        const details = this.details;
 
-        const formats = this.formats
+        const formats = this.formats;
 
-        return Object.assign(details, { formats: formats })
+        return Object.assign(details, { formats: formats });
     }
 
     getHtml5Player(body: string): string {
-        const playerURL = body.split(`"jsUrl":"`)[1]?.split('"')[0]
+        const playerURL = Regexes.PLAYER_URL.exec(body)[1];
 
-        this.html5Player = `${Util.getBaseYTURL()}${playerURL}`
+        this.html5Player = `${Util.getBaseYTURL()}${playerURL}`;
 
-        return this.html5Player
+        return this.html5Player;
     }
 
     async fetchTokens() {
         if (cachedTokens.has(this.html5Player as string) || this.tokens) {
-            this.tokens = cachedTokens.get(this.html5Player as string) ?? this.tokens
-            return cachedTokens.get(this.html5Player) ?? this.tokens
+            this.tokens = cachedTokens.get(this.html5Player as string) ?? this.tokens;
+            return cachedTokens.get(this.html5Player) ?? this.tokens;
         }
 
-        const request = await axios.get<string>(this.html5Player as string)
+        const request = await axios.get<string>(this.html5Player as string);
 
-        const tokens = extractTokens(request.data)
+        const tokens = extractTokens(request.data);
 
-        cachedTokens.set(this.html5Player as string, tokens)
+        cachedTokens.set(this.html5Player as string, tokens);
 
-        this.tokens = tokens as string[]
+        this.tokens = tokens as string[];
 
-        return tokens
+        return tokens;
     }
 
     get details(): YoutubeVideoDetails {
@@ -375,6 +375,6 @@ export class YoutubeVideo {
             author: this.json.videoDetails.author,
             isUnpluggedCorpus: this.json.videoDetails.isUnpluggedCorpus,
             isLiveContent: this.json.videoDetails.isLiveContent
-        }
+        };
     }
 }

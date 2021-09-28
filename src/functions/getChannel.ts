@@ -1,11 +1,12 @@
-import axios from "axios";
-import { YoutubeChannel } from "../structures/YoutubeChannel";
-import { Util } from "../util/Util";
+import axios from 'axios';
+import { YoutubeChannel } from '../structures/YoutubeChannel';
+import * as Regexes from '../util/Regexes';
+import { Util } from '../util/Util';
 
 export async function getChannel(id: string) {
-    const request = await axios.get<string>(`${Util.getYTChannelURL()}/${id}?hl=en`)
+    const request = await axios.get<string>(`${Util.getYTChannelURL()}/${id}?hl=en`);
 
-    const json = JSON.parse(/var\s+ytInitialData\s*=\s*({.+?});/.exec(request.data)[1])
+    const json = JSON.parse(Regexes.YOUTUBE_INITIAL_DATA.exec(request.data)[1]);
 
-    return new YoutubeChannel(json)
+    return new YoutubeChannel(json);
 }

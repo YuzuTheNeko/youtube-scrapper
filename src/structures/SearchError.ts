@@ -1,7 +1,7 @@
 export class SearchError extends Error {
     constructor(error: string) {
-        super(error)
+        super(error);
 
-        Error.captureStackTrace(this, SearchError)
+        Error.captureStackTrace(this, SearchError);
     }
 }

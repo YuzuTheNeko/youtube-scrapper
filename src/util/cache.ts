@@ -1,1 +1,1 @@
-export const cachedTokens: Map<string, string[]> = new Map()
+export const cachedTokens: Map<string, string[]> = new Map();
