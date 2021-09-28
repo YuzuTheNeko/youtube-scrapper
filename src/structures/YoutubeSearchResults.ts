@@ -35,7 +35,7 @@ export interface YoutubeSearchListInfo {
         height: string
     }[]
     url: string
-    title: String
+    title: string
     channel: {
         name: string
         id: string
@@ -52,8 +52,8 @@ export interface YoutubeSearchChannelInfo {
         height: string
     }[]
     url: string
-    title: String
-    verified: Boolean
+    title: string
+    verified: boolean
     subscriberCount: number
 }
 
