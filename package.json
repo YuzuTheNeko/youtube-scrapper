@@ -42,7 +42,7 @@
     "ffmpeg-static": "^4.4.0",
     "gen-esm-wrapper": "^1.1.2",
     "libsodium-wrappers": "^0.7.9",
-    "speaker": "^0.5.3",
+    "prettier": "^2.4.1",
     "typedoc": "^0.21.6"
   }
 }

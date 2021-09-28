@@ -91,13 +91,13 @@
 
 <span style="color: #0000FF">async</span><span style="color: #000000"> </span><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">main</span><span style="color: #000000">() {</span>
 <span style="color: #000000">    </span><span style="color: #008000">// Getting videos through query.</span>
-<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">result</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">scrapper</span><span style="color: #000000">.</span><span style="color: #795E26">search</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;best hits 2010&quot;</span><span style="color: #000000">)</span>
+<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">result</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">scrapper</span><span style="color: #000000">.</span><span style="color: #795E26">search</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;best hits 2010&quot;</span><span style="color: #000000">, { </span><span style="color: #001080">type:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;video&quot;</span><span style="color: #000000"> })</span>
 
-<span style="color: #000000">    </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">result</span><span style="color: #000000">.</span><span style="color: #001080">videos</span><span style="color: #000000">.</span><span style="color: #795E26">map</span><span style="color: #000000">(</span><span style="color: #001080">vid</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">vid</span><span style="color: #000000">.</span><span style="color: #001080">details</span><span style="color: #000000">.</span><span style="color: #001080">title</span><span style="color: #000000">)) </span><span style="color: #008000">// Array of videos mapped by name.</span>
+<span style="color: #000000">    </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">result</span><span style="color: #000000">.</span><span style="color: #001080">results</span><span style="color: #000000">.</span><span style="color: #795E26">map</span><span style="color: #000000">(</span><span style="color: #001080">vid</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">vid</span><span style="color: #000000">.</span><span style="color: #001080">title</span><span style="color: #000000">)) </span><span style="color: #008000">// Array of videos mapped by name.</span>
 
 <span style="color: #000000">    </span><span style="color: #008000">// Downloading first result and piping to a file.</span>
 <span style="color: #000000">    </span><span style="color: #008000">// We have to get the full song info first.</span>
-<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">video</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">scrapper</span><span style="color: #000000">.</span><span style="color: #795E26">getVideoInfo</span><span style="color: #000000">(</span><span style="color: #001080">result</span><span style="color: #000000">.</span><span style="color: #001080">videos</span><span style="color: #000000">[</span><span style="color: #098658">0</span><span style="color: #000000">].</span><span style="color: #001080">id</span><span style="color: #000000">)</span>
+<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">video</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">scrapper</span><span style="color: #000000">.</span><span style="color: #795E26">getVideoInfo</span><span style="color: #000000">(</span><span style="color: #001080">result</span><span style="color: #000000">.</span><span style="color: #001080">results</span><span style="color: #000000">[</span><span style="color: #098658">0</span><span style="color: #000000">].</span><span style="color: #001080">id</span><span style="color: #000000">)</span>
 
 <span style="color: #000000">    </span><span style="color: #008000">// Write to file.</span>
 <span style="color: #000000">    </span><span style="color: #001080">scrapper</span>
@@ -168,7 +168,16 @@
 						<a href="interfaces/PlaylistVideo.html" class="tsd-kind-icon">Playlist<wbr>Video</a>
 					</li>
 					<li class=" tsd-kind-interface">
+						<a href="interfaces/SearchOption.html" class="tsd-kind-icon">Search<wbr>Option</a>
+					</li>
+					<li class=" tsd-kind-interface">
 						<a href="interfaces/YoutubeChannelInfo.html" class="tsd-kind-icon">Youtube<wbr>Channel<wbr>Info</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/YoutubeSearchChannelInfo.html" class="tsd-kind-icon">Youtube<wbr>Search<wbr>Channel<wbr>Info</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/YoutubeSearchListInfo.html" class="tsd-kind-icon">Youtube<wbr>Search<wbr>List<wbr>Info</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/YoutubeSearchVideoInfo.html" class="tsd-kind-icon">Youtube<wbr>Search<wbr>Video<wbr>Info</a>
@@ -192,7 +201,16 @@
 						<a href="modules.html#INNERTUBE_CLIENT_VERSION" class="tsd-kind-icon">INNERTUBE_<wbr>CLIENT_<wbr>VERSION</a>
 					</li>
 					<li class=" tsd-kind-variable">
+						<a href="modules.html#PLAYER_URL" class="tsd-kind-icon">PLAYER_<wbr>URL</a>
+					</li>
+					<li class=" tsd-kind-variable">
 						<a href="modules.html#YOUTUBE_API_KEY" class="tsd-kind-icon">YOUTUBE_<wbr>API_<wbr>KEY</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#YOUTUBE_INITIAL_DATA" class="tsd-kind-icon">YOUTUBE_<wbr>INITIAL_<wbr>DATA</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#YOUTUBE_PLAYER_RESPONSE" class="tsd-kind-icon">YOUTUBE_<wbr>PLAYER_<wbr>RESPONSE</a>
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="modules.html#cachedTokens" class="tsd-kind-icon">cached<wbr>Tokens</a>

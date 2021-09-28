@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>GetPlaylistInfoOptions | youtube-scrapper</title>
+	<title>SearchOption | youtube-scrapper</title>
 	<meta name="description" content="Documentation for youtube-scrapper">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,10 +55,10 @@
 					<a href="../modules.html">youtube-scrapper</a>
 				</li>
 				<li>
-					<a href="GetPlaylistInfoOptions.html">GetPlaylistInfoOptions</a>
+					<a href="SearchOption.html">SearchOption</a>
 				</li>
 			</ul>
-			<h1>Interface GetPlaylistInfoOptions</h1>
+			<h1>Interface SearchOption</h1>
 		</div>
 	</div>
 </header>
@@ -69,7 +69,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">GetPlaylistInfoOptions</span>
+						<span class="target">SearchOption</span>
 					</li>
 				</ul>
 			</section>
@@ -80,7 +80,8 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="GetPlaylistInfoOptions.html#full" class="tsd-kind-icon">full</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="SearchOption.html#limit" class="tsd-kind-icon">limit</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="SearchOption.html#type" class="tsd-kind-icon">type</a></li>
 							</ul>
 						</section>
 					</div>
@@ -89,12 +90,22 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="full" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> full</h3>
-					<div class="tsd-signature tsd-kind-icon">full<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<a name="limit" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> limit</h3>
+					<div class="tsd-signature tsd-kind-icon">limit<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/cjh980402/youtube-scrapper/blob/0337b84/src/functions/getPlaylistInfo.ts#L5">src/functions/getPlaylistInfo.ts:5</a></li>
+							<li>Defined in <a href="https://github.com/cjh980402/youtube-scrapper/blob/0337b84/src/functions/search.ts#L17">src/functions/search.ts:17</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="type" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> type</h3>
+					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;video&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;playlist&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;channel&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/cjh980402/youtube-scrapper/blob/0337b84/src/functions/search.ts#L16">src/functions/search.ts:16</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -143,27 +154,30 @@
 					<li class=" tsd-kind-interface">
 						<a href="DownloadOptions.html" class="tsd-kind-icon">Download<wbr>Options</a>
 					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-interface">
+					<li class=" tsd-kind-interface">
 						<a href="GetPlaylistInfoOptions.html" class="tsd-kind-icon">Get<wbr>Playlist<wbr>Info<wbr>Options</a>
-						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="GetPlaylistInfoOptions.html#full" class="tsd-kind-icon">full</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-interface">
 						<a href="PlaylistData.html" class="tsd-kind-icon">Playlist<wbr>Data</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="PlaylistVideo.html" class="tsd-kind-icon">Playlist<wbr>Video</a>
 					</li>
-					<li class=" tsd-kind-interface">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface">
 						<a href="SearchOption.html" class="tsd-kind-icon">Search<wbr>Option</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="SearchOption.html#limit" class="tsd-kind-icon">limit</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="SearchOption.html#type" class="tsd-kind-icon">type</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-interface">
 						<a href="YoutubeChannelInfo.html" class="tsd-kind-icon">Youtube<wbr>Channel<wbr>Info</a>
 					</li>

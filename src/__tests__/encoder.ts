@@ -1,6 +1,6 @@
 import { PassThrough, Readable, Transform } from 'stream';
+import { createWriteStream } from 'fs';
 import { downloadFromVideo, getVideoInfo } from '../functions';
-import Speaker from 'speaker';
 import prism from 'prism-media';
 
 (async () => {
@@ -20,11 +20,7 @@ import prism from 'prism-media';
         const packets: Buffer[] = [];
         let sent = 0;
 
-        const speaker = new Speaker({
-            channels: 2,
-            sampleRate: 48000,
-            bitDepth: 16
-        });
+        const writable = createWriteStream(`test.${format.codec}`);
         download
             .pipe(new prism.opus.WebmDemuxer())
             .pipe(new prism.opus.Decoder({ channels: 2, frameSize: 960, rate: 48000 }))
@@ -61,7 +57,7 @@ import prism from 'prism-media';
             download.once('data', () => {
                 retry--;
                 if (retry === 0) {
-                    return readable.pipe(speaker);
+                    return readable.pipe(writable);
                 } else waitChunks();
             });
         };
