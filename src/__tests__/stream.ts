@@ -14,13 +14,13 @@ const ms = Date.now()
 
 const client = new Client({
     intents: Object.values(Intents.FLAGS)
-}) 
+})
 
 client.on("ready", async () => {
     console.log(`Bot is ready!`)
 
     const guild = client.guilds.cache.get("773352845738115102") as Guild
-    
+
     const connection = joinVoiceChannel({
         channelId: "816751491451977768",
         guildId: guild.id,
@@ -33,8 +33,8 @@ client.on("ready", async () => {
 
     connection.subscribe(player)
 
-    
-    const video = await getVideoInfo("https://www.youtube.com/watch?v=f8HtmFtGSQo") 
+
+    const video = await getVideoInfo("https://www.youtube.com/watch?v=f8HtmFtGSQo")
 
     if (!video) {
         return;

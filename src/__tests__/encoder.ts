@@ -11,13 +11,13 @@ import prism from "prism-media"
             const format = video.formats.find(c => c.codec === "opus" && c.hasAudio && !c.hasVideo)
 
             console.log(format.url)
-            const download = downloadFromVideo(video, format, { 
+            const download = downloadFromVideo(video, format, {
                 chunkMode: {},
                 pipe: false
             }) as PassThrough
-    
+
             let index = 0
-    
+
             const packets: Buffer[] = []
             let sent = 0
 

@@ -11,7 +11,7 @@ export async function getVideoInfo(urlOrId: string, getPlaylistFormats: boolean 
 
     if (json.playabilityStatus?.status === "ERROR") {
         throw Error(json.playabilityStatus.reason)
-    } 
+    }
 
     const video = new YoutubeVideo(json)
 
@@ -20,7 +20,7 @@ export async function getVideoInfo(urlOrId: string, getPlaylistFormats: boolean 
     const pending: Promise<unknown>[] = []
 
     pending.push(video.fetchTokens())
-    
+
     const moreFormats: YoutubeVideoFormat[] = []
     const dashMpdUrl = video['json'].streamingData?.dashManifestUrl
     const m3u8Url = video['json'].streamingData?.hlsManifestUrl

@@ -22,13 +22,13 @@ const { createWriteStream } = require("fs")
 
 async function main() {
     // Getting videos through query.
-    const result = await scrapper.search("best hits 2010")
+    const result = await scrapper.search("best hits 2010", { type: "video" })
 
-    console.log(result.videos.map(vid => vid.details.title)) // Array of videos mapped by name.
+    console.log(result.results.map(vid => vid.title)) // Array of videos mapped by name.
 
     // Downloading first result and piping to a file.
     // We have to get the full song info first.
-    const video = await scrapper.getVideoInfo(result.videos[0].id)
+    const video = await scrapper.getVideoInfo(result.results[0].id)
 
     // Write to file.
     scrapper

@@ -56,7 +56,7 @@ export class Playlist {
         if (!this.tracks.length) await this.fetchFirstPage()
 
         if (!this.token) return this
-        
+
         if (!this.token || !this.apiKey) {
             await this.fetchFirstPage()
             if (!this.token) {
@@ -68,13 +68,13 @@ export class Playlist {
 
         const request = await axios.post(`${Util.getYTApiBaseURL()}/browse?key=${this.apiKey}`, {
             context: this.context,
-            continuation: this.token 
+            continuation: this.token
         })
 
-        const json = request.data 
+        const json = request.data
 
         const tracks = json.onResponseReceivedActions[0].appendContinuationItemsAction.continuationItems
-        
+
         const hasAnotherPage = Boolean(tracks[tracks.length - 1].continuationItemRenderer)
 
         if (hasAnotherPage) {
@@ -104,7 +104,7 @@ export class Playlist {
         if (this.tracks.length > 99) return this.tracks.slice(0, 100)
 
         const request = await axios.get<string>(`${Util.getYTPlaylistURL()}?list=${this.listId}&hl=en`).catch(noop)
-        
+
         if (!request) {
             throw new TypeError(ErrorCodes.PLAYLIST_LOAD_FAILED)
         }
@@ -132,7 +132,7 @@ export class Playlist {
         const metadata = json.metadata.playlistMetadataRenderer
 
         this.data = {
-            name: metadata.title, 
+            name: metadata.title,
             description: metadata.description
         }
 
@@ -164,13 +164,13 @@ export class Playlist {
         if (this.clientVersion) {
             context.client.clientVersion = this.clientVersion
         }
-        
+
         return context
     }
 
     private addTracks(tracks: any[]): this {
         for (const data of tracks) {
-            const track = data.playlistVideoRenderer 
+            const track = data.playlistVideoRenderer
 
             if (!track) {
                 continue
@@ -181,7 +181,7 @@ export class Playlist {
                 id: track.videoId,
                 index: Number(track.index.simpleText),
                 formattedDuration: track.lengthText.simpleText,
-                formattedReadableDuration: track.lengthText.accessibility.accessibilityData.label, 
+                formattedReadableDuration: track.lengthText.accessibility.accessibilityData.label,
                 duration: Number(track.lengthSeconds) * 1000,
                 isPlayable: track.isPlayable,
                 thumbnails: track.thumbnail?.thumbnails ?? [],

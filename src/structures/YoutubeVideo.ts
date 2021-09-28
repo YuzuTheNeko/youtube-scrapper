@@ -98,20 +98,20 @@ export class YoutubeVideo {
     }
 
     get url() {
-        return Util.getYTVideoURL() + this.info.id
+        return `${Util.getYTVideoURL()}${this.info.id}`
     }
 
     get formats(): YoutubeVideoFormat[] {
         const arr = [...this.moreFormats] ?? []
 
-        for (const format of 
+        for (const format of
             [
                 ...(this.json.streamingData?.adaptiveFormats ?? []),
                 ...(this.json.streamingData?.formats ?? [])
             ] as any[]) {
 
             let frmt: YoutubeVideoFormat = {
-                itag: format.itag, 
+                itag: format.itag,
                 mimeType: format.mimeType,
                 type: format.mimeType.split(";")[0],
                 codec: format.mimeType.split('"')[1].split('"')[0],
@@ -128,9 +128,9 @@ export class YoutubeVideo {
                 },
                 lastModifiedTimestamp: Number(format.lastModified),
                 contentLength: Number(format.contentLength),
-                fps: format.fps, 
+                fps: format.fps,
                 quality: format.quality,
-                url: format.url, 
+                url: format.url,
                 qualityLabel: format.qualityLabel,
                 projectionType: format.projectionType,
                 averageBitrate: format.averageBitrate,
@@ -140,7 +140,7 @@ export class YoutubeVideo {
             }
 
             if (format.url && !frmt.signatureCipher) {
-                frmt.url = format.url 
+                frmt.url = format.url
             }
 
             if (!frmt.url) {
@@ -156,7 +156,7 @@ export class YoutubeVideo {
             if (sig) {
                 url.searchParams.set(frmt.sp ?? "signature", sig)
             }
-            
+
             frmt.url = url.toString()
 
             arr.push(
@@ -185,14 +185,14 @@ export class YoutubeVideo {
                 const stream = options.resource ?? new PassThrough({
                     // Set watermark to 64KB (default) for chunking.
                     highWaterMark: options.highWaterMark ?? 64 * 1024
-                }) 
-    
+                })
+
                 let downloadChunkSize = options.chunkMode.chunkSize ?? 256 * 1024
-    
+
                 let endBytes = downloadChunkSize, startBytes = 0
 
                 const pipelike = options.pipe ?? true
-                
+
                 let awaitDrain: (() => void) | null
 
                 let request: Miniget.Stream | null
@@ -231,14 +231,14 @@ export class YoutubeVideo {
                             stream.destroy(error)
                         }
                     })
-    
+
                     request.on("data", (chunk: Buffer) => {
                         if (stream.destroyed) {
                             request.destroy()
                             return;
                         }
                         startBytes += chunk.length
-                        
+
                         if (pipelike) {
                             if (!stream.write(chunk)) {
                                 request.pause()
@@ -248,19 +248,19 @@ export class YoutubeVideo {
                             stream.write(chunk)
                         }
                     })
-    
+
                     request.once("end", () => {
                         if (stream.destroyed) return;
                         if (endBytes === format.contentLength) {
                             return;
                         }
                         endBytes = startBytes + downloadChunkSize
-                        getNextChunk() 
+                        getNextChunk()
                     })
                 }
-    
+
                 getNextChunk()
-    
+
                 return stream
             } else {
                 const stream = new PassThrough({ highWaterMark: format.contentLength })
@@ -297,10 +297,10 @@ export class YoutubeVideo {
 
         for (let i = 0;i < tokens.length;i++) {
             const token = tokens[i]
-            let position; 
+            let position;
 
             switch(token[0]) {
-                case 'r': 
+                case 'r':
                     arr = arr.reverse()
                     break
                 case 'w':
@@ -358,7 +358,7 @@ export class YoutubeVideo {
         return {
             url: `${Util.getYTVideoURL()}${this.json.videoDetails?.videoId}`,
             id: this.json.videoDetails.videoId,
-            title: this.json.videoDetails.title, 
+            title: this.json.videoDetails.title,
             duration: Number(this.json.videoDetails.lengthSeconds) * 1000,
             channelId: this.json.videoDetails.channelId,
             keywords: this.json.videoDetails.keywords,

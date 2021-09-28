@@ -11,7 +11,12 @@ enum SearchType {
     "channel" = "EgIQAg%3D%3D"
 }
 
-export async function search(query: string, type?: string) {
+export interface SearchOption {
+    type?: "video" | "playlist" | "channel"
+    limit?: number
+}
+
+export async function search(query: string, { type, limit = Infinity }: SearchOption = {}) {
     const params = new URLSearchParams()
 
     params.append("search_query", query)
@@ -31,7 +36,7 @@ export async function search(query: string, type?: string) {
     try {
         const json = JSON.parse(/var\s+ytInitialData\s*=\s*({.+?});/.exec(request.data)[1])
 
-        return new YoutubeSearchResults(json)
+        return new YoutubeSearchResults(json, limit)
     } catch (error: any) {
         throw new SearchError(error.message)
     }

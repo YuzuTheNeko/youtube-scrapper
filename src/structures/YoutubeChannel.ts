@@ -22,7 +22,7 @@ export interface YoutubeChannelInfo {
 }
 
 export class YoutubeChannel {
-    json: any
+    private json: any
 
     constructor(json: any) {
         this.json = json
@@ -44,13 +44,13 @@ export class YoutubeChannel {
             channelId: header.channelId,
             title: header.title,
             avatars: header.avatar.thumbnails,
-            banners: header.banner.thumbnails, 
-            keywords: metadata.keywords, 
+            banners: header.banner.thumbnails,
+            keywords: metadata.keywords,
             description: metadata.description,
             rssUrl: metadata.rssUrl,
             isFamilySafe: metadata.isFamilySafe,
             availableCountryCodes: metadata.availableCountryCodes,
             subscriberFormattedCount: header.subscriberCountText.simpleText
         }
-    } 
+    }
 }

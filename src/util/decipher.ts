@@ -73,11 +73,11 @@ export const extractTokens = (body: string): string[] => {
     const objResult = actionsObjRegexp.exec(body);
     const funcResult = actionsFuncRegexp.exec(body);
     if (!objResult || !funcResult) { return null; }
-  
+
     const obj = objResult[1].replace(/\$/g, '\\$');
     const objBody = objResult[2].replace(/\$/g, '\\$');
     const funcBody = funcResult[1].replace(/\$/g, '\\$');
-  
+
     let result = reverseRegexp.exec(objBody);
     const reverseKey = result && result[1]
       .replace(/\$/g, '\\$')
@@ -94,7 +94,7 @@ export const extractTokens = (body: string): string[] => {
     const swapKey = result && result[1]
       .replace(/\$/g, '\\$')
       .replace(/\$|^'|^"|'$|"$/g, '');
-  
+
     const keys = `(${[reverseKey, sliceKey, spliceKey, swapKey].join('|')})`;
     const myreg = `(?:a=)?${obj
     }(?:\\.${keys}|\\['${keys}'\\]|\\["${keys}"\\])` +

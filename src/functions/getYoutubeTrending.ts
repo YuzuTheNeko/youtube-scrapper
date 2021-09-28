@@ -3,7 +3,7 @@ import { YoutubeTrending } from "../structures/YoutubeTrending";
 import { Util } from "../util/Util";
 
 export async function getYoutubeTrending() {
-    const request = await axios.get<string>(Util.getYTTrendingURL() + "?hl=en")
+    const request = await axios.get<string>(`${Util.getYTTrendingURL()}?hl=en`)
 
     const json = JSON.parse(/var\s+ytInitialData\s*=\s*({.+?});/.exec(request.data)[1])
 

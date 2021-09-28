@@ -90,7 +90,7 @@ export class Util extends null {
                         format.height = Number(representation["$height"])
                         format.fps = Number(representation["$frameRate"])
                     }
-                    
+
                     moreFormats.push(this.addMetadataToFormat(format))
                 }
             }

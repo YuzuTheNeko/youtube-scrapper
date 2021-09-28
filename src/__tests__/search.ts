@@ -3,7 +3,7 @@ import { search } from "../functions/search";
 async function s() {
   const result = await search('i')
 
-  console.log(result.videos)
+  console.log(result.results)
 }
 
 s()
