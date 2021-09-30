@@ -86,26 +86,24 @@
 				<a href="#example" id="example" style="color: inherit; text-decoration: none;">
 					<h3>Example</h3>
 				</a>
-				<pre><code class="language-js"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">scrapper</span><span style="color: #000000"> = </span><span style="color: #795E26">require</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;youtube-scrapper&quot;</span><span style="color: #000000">)</span>
-<span style="color: #0000FF">const</span><span style="color: #000000"> { </span><span style="color: #0070C1">createWriteStream</span><span style="color: #000000"> } = </span><span style="color: #795E26">require</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;fs&quot;</span><span style="color: #000000">)</span>
+				<pre><code class="language-js"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">scrapper</span><span style="color: #000000"> = </span><span style="color: #795E26">require</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;youtube-scrapper&#039;</span><span style="color: #000000">);</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> { </span><span style="color: #0070C1">createWriteStream</span><span style="color: #000000"> } = </span><span style="color: #795E26">require</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;fs&#039;</span><span style="color: #000000">);</span>
 
 <span style="color: #0000FF">async</span><span style="color: #000000"> </span><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">main</span><span style="color: #000000">() {</span>
 <span style="color: #000000">    </span><span style="color: #008000">// Getting videos through query.</span>
-<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">result</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">scrapper</span><span style="color: #000000">.</span><span style="color: #795E26">search</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;best hits 2010&quot;</span><span style="color: #000000">, { </span><span style="color: #001080">type:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;video&quot;</span><span style="color: #000000"> })</span>
+<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">result</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">scrapper</span><span style="color: #000000">.</span><span style="color: #795E26">search</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;best hits 2010&#039;</span><span style="color: #000000">, { </span><span style="color: #001080">type:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;video&#039;</span><span style="color: #000000"> });</span>
 
-<span style="color: #000000">    </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">result</span><span style="color: #000000">.</span><span style="color: #001080">results</span><span style="color: #000000">.</span><span style="color: #795E26">map</span><span style="color: #000000">(</span><span style="color: #001080">vid</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">vid</span><span style="color: #000000">.</span><span style="color: #001080">title</span><span style="color: #000000">)) </span><span style="color: #008000">// Array of videos mapped by name.</span>
+<span style="color: #000000">    </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">result</span><span style="color: #000000">.</span><span style="color: #795E26">map</span><span style="color: #000000">((</span><span style="color: #001080">vid</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">vid</span><span style="color: #000000">.</span><span style="color: #001080">title</span><span style="color: #000000">)); </span><span style="color: #008000">// Array of videos mapped by name.</span>
 
 <span style="color: #000000">    </span><span style="color: #008000">// Downloading first result and piping to a file.</span>
 <span style="color: #000000">    </span><span style="color: #008000">// We have to get the full song info first.</span>
-<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">video</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">scrapper</span><span style="color: #000000">.</span><span style="color: #795E26">getVideoInfo</span><span style="color: #000000">(</span><span style="color: #001080">result</span><span style="color: #000000">.</span><span style="color: #001080">results</span><span style="color: #000000">[</span><span style="color: #098658">0</span><span style="color: #000000">].</span><span style="color: #001080">id</span><span style="color: #000000">)</span>
+<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">video</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">scrapper</span><span style="color: #000000">.</span><span style="color: #795E26">getVideoInfo</span><span style="color: #000000">(</span><span style="color: #001080">result</span><span style="color: #000000">[</span><span style="color: #098658">0</span><span style="color: #000000">].</span><span style="color: #001080">id</span><span style="color: #000000">);</span>
 
 <span style="color: #000000">    </span><span style="color: #008000">// Write to file.</span>
-<span style="color: #000000">    </span><span style="color: #001080">scrapper</span>
-<span style="color: #000000">        .</span><span style="color: #795E26">downloadFromVideo</span><span style="color: #000000">(</span><span style="color: #001080">video</span><span style="color: #000000">)</span>
-<span style="color: #000000">        .</span><span style="color: #795E26">pipe</span><span style="color: #000000">(</span><span style="color: #795E26">createWriteStream</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;./song.ogg&quot;</span><span style="color: #000000">))</span>
+<span style="color: #000000">    </span><span style="color: #001080">scrapper</span><span style="color: #000000">.</span><span style="color: #795E26">downloadFromVideo</span><span style="color: #000000">(</span><span style="color: #001080">video</span><span style="color: #000000">).</span><span style="color: #795E26">pipe</span><span style="color: #000000">(</span><span style="color: #795E26">createWriteStream</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;./song.ogg&#039;</span><span style="color: #000000">));</span>
 <span style="color: #000000">}</span>
 
-<span style="color: #795E26">main</span><span style="color: #000000">()</span>
+<span style="color: #795E26">main</span><span style="color: #000000">();</span>
 </code></pre>
 				<a href="#disclaimer" id="disclaimer" style="color: inherit; text-decoration: none;">
 					<h3>Disclaimer</h3>
@@ -226,6 +224,9 @@
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="modules.html#getPlaylistInfo" class="tsd-kind-icon">get<wbr>Playlist<wbr>Info</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#getSearchInfo" class="tsd-kind-icon">get<wbr>Search<wbr>Info</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="modules.html#getUser" class="tsd-kind-icon">get<wbr>User</a>

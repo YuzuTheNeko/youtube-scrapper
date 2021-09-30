@@ -111,31 +111,10 @@ export class YoutubeSearchResults {
                     formattedViewCount: formattedViewCount,
                     description: video.detailedMetadataSnippets?.[0].snippetText.runs.map((e: any) => e.text).join(''),
                     duration:
-                        formattedDuration !== '0'
-                            ? ((): number => {
-                                  let n = 0;
-                                  let y = 0;
-                                  for (const pointer of video.lengthText.simpleText
-                                      .split(':')
-                                      .reverse()
-                                      .map((d: string) => Number(d))) {
-                                      n +=
-                                          pointer *
-                                          (y === 0
-                                              ? 1000
-                                              : y === 1
-                                              ? 60000
-                                              : y === 2
-                                              ? 3600000
-                                              : y === 3
-                                              ? 86400000
-                                              : 0);
-
-                                      y++;
-                                  }
-                                  return n;
-                              })()
-                            : 0
+                        formattedDuration
+                            .split(':')
+                            .map((d: string) => Number(d))
+                            .reduce((acc, time) => 60 * acc + time) * 1000
                 });
             } else if (list) {
                 arr.push({

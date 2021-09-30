@@ -4,9 +4,9 @@ import * as Regexes from '../util/Regexes';
 import { Util } from '../util/Util';
 
 export async function getChannel(id: string) {
-    const request = await axios.get<string>(`${Util.getYTChannelURL()}/${id}?hl=en`);
+    const { data } = await axios.get<string>(`${Util.getYTChannelURL()}/${id}?hl=en`);
 
-    const json = JSON.parse(Regexes.YOUTUBE_INITIAL_DATA.exec(request.data)[1]);
+    const json = JSON.parse(Regexes.YOUTUBE_INITIAL_DATA.exec(data)[1]);
 
     return new YoutubeChannel(json);
 }

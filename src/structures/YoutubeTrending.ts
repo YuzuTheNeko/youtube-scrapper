@@ -61,21 +61,11 @@ export class YoutubeTrending {
                     formattedReadableDuration: video.lengthText.accessibility.accessibilityData.label,
                     formattedViewCount: video.shortViewCountText.simpleText,
                     description: video.detailedMetadataSnippets?.[0].snippetText.runs.map((e: any) => e.text).join(''),
-                    duration: ((): number => {
-                        let n = 0;
-                        let y = 0;
-                        for (const pointer of video.lengthText.simpleText
+                    duration:
+                        video.lengthText.simpleText
                             .split(':')
-                            .reverse()
-                            .map((d: string) => Number(d))) {
-                            n +=
-                                pointer *
-                                (y === 0 ? 1000 : y === 1 ? 60000 : y === 2 ? 3600000 : y === 3 ? 86400000 : 0);
-
-                            y++;
-                        }
-                        return n;
-                    })()
+                            .map((d: string) => Number(d))
+                            .reduce((acc, time) => 60 * acc + time) * 1000
                 });
             }
         }

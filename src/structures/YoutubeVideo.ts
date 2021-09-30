@@ -187,7 +187,7 @@ export class YoutubeVideo {
                         highWaterMark: options.highWaterMark ?? 64 * 1024
                     });
 
-                let downloadChunkSize = options.chunkMode.chunkSize ?? 256 * 1024;
+                const downloadChunkSize = options.chunkMode.chunkSize ?? 256 * 1024;
 
                 let endBytes = downloadChunkSize,
                     startBytes = 0;
@@ -252,8 +252,7 @@ export class YoutubeVideo {
                     });
 
                     request.once('end', () => {
-                        if (stream.destroyed) return;
-                        if (endBytes === format.contentLength) {
+                        if (stream.destroyed || endBytes === format.contentLength) {
                             return;
                         }
                         endBytes = startBytes + downloadChunkSize;
@@ -345,9 +344,9 @@ export class YoutubeVideo {
             return cachedTokens.get(this.html5Player) ?? this.tokens;
         }
 
-        const request = await axios.get<string>(this.html5Player as string);
+        const { data } = await axios.get<string>(this.html5Player as string);
 
-        const tokens = extractTokens(request.data);
+        const tokens = extractTokens(data);
 
         cachedTokens.set(this.html5Player as string, tokens);
 

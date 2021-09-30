@@ -53,9 +53,9 @@ export class Playlist {
     }
 
     async fetch(): Promise<this> {
-        if (!this.tracks.length) await this.fetchFirstPage();
-
-        if (!this.token) return this;
+        if (!this.tracks.length) {
+            await this.fetchFirstPage();
+        }
 
         if (!this.token || !this.apiKey) {
             await this.fetchFirstPage();
@@ -66,12 +66,10 @@ export class Playlist {
             }
         }
 
-        const request = await axios.post(`${Util.getYTApiBaseURL()}/browse?key=${this.apiKey}`, {
+        const { data: json } = await axios.post(`${Util.getYTApiBaseURL()}/browse?key=${this.apiKey}`, {
             context: this.context,
             continuation: this.token
         });
-
-        const json = request.data;
 
         const tracks = json.onResponseReceivedActions[0].appendContinuationItemsAction.continuationItems;
 
@@ -101,7 +99,9 @@ export class Playlist {
     }
 
     async fetchFirstPage() {
-        if (this.tracks.length > 99) return this.tracks.slice(0, 100);
+        if (this.tracks.length > 99) {
+            return this.tracks.slice(0, 100);
+        }
 
         const request = await axios.get<string>(`${Util.getYTPlaylistURL()}?list=${this.listId}&hl=en`).catch(noop);
 
@@ -117,7 +117,7 @@ export class Playlist {
 
         const json = JSON.parse(res);
 
-        const apiKey = Regexes.YOUTUBE_API_KEY.exec(request.data)?.[2];
+        const apiKey = Regexes.YOUTUBE_API_KEY.exec(request.data)?.[1];
 
         const version = Regexes.INNERTUBE_CLIENT_VERSION.exec(request.data)?.[1];
 

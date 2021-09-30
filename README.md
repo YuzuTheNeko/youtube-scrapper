@@ -17,26 +17,24 @@ Simply use `npm i youtube-scrapper`.
 
 ### Example
 ```js
-const scrapper = require("youtube-scrapper")
-const { createWriteStream } = require("fs")
+const scrapper = require('youtube-scrapper');
+const { createWriteStream } = require('fs');
 
 async function main() {
     // Getting videos through query.
-    const result = await scrapper.search("best hits 2010", { type: "video" })
+    const result = await scrapper.search('best hits 2010', { type: 'video' });
 
-    console.log(result.results.map(vid => vid.title)) // Array of videos mapped by name.
+    console.log(result.map((vid) => vid.title)); // Array of videos mapped by name.
 
     // Downloading first result and piping to a file.
     // We have to get the full song info first.
-    const video = await scrapper.getVideoInfo(result.results[0].id)
+    const video = await scrapper.getVideoInfo(result[0].id);
 
     // Write to file.
-    scrapper
-        .downloadFromVideo(video)
-        .pipe(createWriteStream("./song.ogg"))
+    scrapper.downloadFromVideo(video).pipe(createWriteStream('./song.ogg'));
 }
 
-main()
+main();
 ```
 
 ### Disclaimer

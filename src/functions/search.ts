@@ -1,10 +1,5 @@
-import axios from 'axios';
-import { SearchError } from '../structures/SearchError';
-import { YoutubeSearchResults } from '../structures/YoutubeSearchResults';
-import { ErrorCodes } from '../util/constants';
-import * as Regexes from '../util/Regexes';
-import { noop } from '../util/noop';
 import { Util } from '../util/Util';
+import { getSearchInfo } from './getSearchInfo';
 
 enum SearchType {
     'video' = 'EgIQAQ%3D%3D',
@@ -28,17 +23,7 @@ export async function search(query: string, { type, limit = Infinity }: SearchOp
         params.append('sp', SearchType[type]);
     }
 
-    const request = await axios.get<string>(`${Util.getYTSearchURL()}?${params}`).catch(noop);
+    const { results } = await getSearchInfo(`${Util.getYTSearchURL()}?${params}`, limit);
 
-    if (!request) {
-        throw new SearchError(ErrorCodes.SEARCH_FAILED);
-    }
-
-    try {
-        const json = JSON.parse(Regexes.YOUTUBE_INITIAL_DATA.exec(request.data)[1]);
-
-        return new YoutubeSearchResults(json, limit);
-    } catch (error: any) {
-        throw new SearchError(error.message);
-    }
+    return results;
 }

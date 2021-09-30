@@ -2,6 +2,7 @@ import { download } from '../functions/download';
 import { downloadFromVideo } from '../functions/downloadFromVideo';
 import { getChannel } from '../functions/getChannel';
 import { getPlaylistInfo } from '../functions/getPlaylistInfo';
+import { getSearchInfo } from '../functions/getSearchInfo';
 import { getUser } from '../functions/getUser';
 import { getVideoInfo } from '../functions/getVideoInfo';
 import { getYoutubeTrending } from '../functions/getYoutubeTrending';
@@ -21,6 +22,10 @@ export class Manager {
 
     get getVideoInfo() {
         return getVideoInfo;
+    }
+
+    get getSearchInfo() {
+        return getSearchInfo;
     }
 
     get getUser() {

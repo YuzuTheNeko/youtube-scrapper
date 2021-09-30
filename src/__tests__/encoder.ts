@@ -58,7 +58,9 @@ import prism from 'prism-media';
                 retry--;
                 if (retry === 0) {
                     return readable.pipe(writable);
-                } else waitChunks();
+                } else {
+                    waitChunks();
+                }
             });
         };
 

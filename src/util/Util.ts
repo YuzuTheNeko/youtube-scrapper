@@ -117,7 +117,9 @@ export class Util extends null {
         const { data } = await axios.get<string>(new URL(url, Util.getYTVideoURL()).toString());
 
         for (const line of data.split('\n')) {
-            if (!/^https?:\/\//.test(line)) continue;
+            if (!/^https?:\/\//.test(line)) {
+                continue;
+            }
 
             const itag = Number(line.match(/\/itag\/(\d+)\//)?.[1]) as keyof typeof formats;
             const reservedFormat = formats[itag];
