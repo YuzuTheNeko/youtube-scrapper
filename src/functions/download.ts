@@ -14,11 +14,13 @@ export async function download(urlOrId: string, format?: YoutubeVideoFormat, opt
         // If a format was provided, we can just use it instead.
         return downloadFromVideo(video, format, options);
     } else {
+        const { formats } = video;
         // This format is suitable for live video or music bots.
-        const liveOrOpus = video.formats.find((c) =>
+        const liveOrOpus = formats.filter((c) =>
             c.isLive ? c.isHLS : c.codec === 'opus' && c.hasAudio && !c.hasVideo
         );
 
-        return downloadFromVideo(video, liveOrOpus ?? video.formats[video.formats.length - 1], options);
+        // Choose last available format because format is ascending order.
+        return downloadFromVideo(video, liveOrOpus[liveOrOpus.length - 1] ?? formats[formats.length - 1], options);
     }
 }

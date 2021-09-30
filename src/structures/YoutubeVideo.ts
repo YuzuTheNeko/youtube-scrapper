@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Miniget from 'miniget';
 import m3u8stream from 'm3u8stream';
-import querystring from 'querystring';
+import { parse } from 'querystring';
 import * as Regexes from '../util/Regexes';
 import { Util } from '../util/Util';
 import { PassThrough } from 'stream';
@@ -103,7 +103,7 @@ export class YoutubeVideo {
     }
 
     get formats(): YoutubeVideoFormat[] {
-        const arr = [...this.moreFormats] ?? [];
+        const arr = [...(this.moreFormats ?? [])];
 
         for (const format of [
             ...(this.json.streamingData?.adaptiveFormats ?? []),
@@ -143,10 +143,10 @@ export class YoutubeVideo {
             }
 
             if (!frmt.url) {
-                frmt = Object.assign(frmt, querystring.parse(frmt.signatureCipher as string));
+                frmt = { ...frmt, ...parse(frmt.signatureCipher as string) };
             }
 
-            let sig = this.tokens && frmt.s ? YoutubeVideo.decipher(this.tokens, frmt.s) : undefined;
+            const sig = this.tokens && frmt.s ? YoutubeVideo.decipher(this.tokens, frmt.s) : undefined;
 
             const url = new URL(decodeURIComponent(frmt.url as string));
 
@@ -223,9 +223,9 @@ export class YoutubeVideo {
 
                     // Handle unknown 403 errors accordinly.
                     request.once('error', (error) => {
-                        request.destroy();
+                        request?.destroy();
                         if (error.message.includes('403')) {
-                            request.removeAllListeners();
+                            request?.removeAllListeners();
                             request = null;
                             options.resource = stream;
                             download(this.details.url, undefined, options);
@@ -236,15 +236,15 @@ export class YoutubeVideo {
 
                     request.on('data', (chunk: Buffer) => {
                         if (stream.destroyed) {
-                            request.destroy();
+                            request?.destroy();
                             return;
                         }
                         startBytes += chunk.length;
 
                         if (pipelike) {
                             if (!stream.write(chunk)) {
-                                request.pause();
-                                awaitDrain = () => request.resume();
+                                request?.pause();
+                                awaitDrain = () => request?.resume();
                             }
                         } else {
                             stream.write(chunk);
@@ -327,11 +327,11 @@ export class YoutubeVideo {
 
         const formats = this.formats;
 
-        return Object.assign(details, { formats: formats });
+        return { ...details, formats };
     }
 
     getHtml5Player(body: string): string {
-        const playerURL = Regexes.PLAYER_URL.exec(body)[1];
+        const playerURL = (Regexes.PLAYER_URL.exec(body) as RegExpExecArray)[1];
 
         this.html5Player = `${Util.getBaseYTURL()}${playerURL}`;
 
@@ -341,23 +341,23 @@ export class YoutubeVideo {
     async fetchTokens() {
         if (cachedTokens.has(this.html5Player as string) || this.tokens) {
             this.tokens = cachedTokens.get(this.html5Player as string) ?? this.tokens;
-            return cachedTokens.get(this.html5Player) ?? this.tokens;
+            return cachedTokens.get(this.html5Player as string) ?? this.tokens;
         }
 
         const { data } = await axios.get<string>(this.html5Player as string);
 
-        const tokens = extractTokens(data);
+        const tokens = extractTokens(data) as string[];
 
         cachedTokens.set(this.html5Player as string, tokens);
 
-        this.tokens = tokens as string[];
+        this.tokens = tokens;
 
         return tokens;
     }
 
     get details(): YoutubeVideoDetails {
         return {
-            url: `${Util.getYTVideoURL()}${this.json.videoDetails?.videoId}`,
+            url: `${Util.getYTVideoURL()}${this.json.videoDetails.videoId}`,
             id: this.json.videoDetails.videoId,
             title: this.json.videoDetails.title,
             duration: Number(this.json.videoDetails.lengthSeconds) * 1000,

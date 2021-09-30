@@ -8,7 +8,7 @@ export async function getVideoInfo(urlOrId: string) {
 
     const { data } = await axios.get<string>(`${Util.getYTVideoURL()}${id}&hl=en`);
 
-    const json = JSON.parse(Regexes.YOUTUBE_PLAYER_RESPONSE.exec(data)[1]);
+    const json = JSON.parse((Regexes.YOUTUBE_PLAYER_RESPONSE.exec(data) as RegExpExecArray)[1]);
 
     if (json.playabilityStatus?.status === 'ERROR') {
         throw Error(json.playabilityStatus.reason);

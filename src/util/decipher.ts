@@ -27,7 +27,7 @@ const sliceRegexp = new RegExp(`(?:^|,)(${jsKeyStr})${sliceStr}`, 'm');
 const spliceRegexp = new RegExp(`(?:^|,)(${jsKeyStr})${spliceStr}`, 'm');
 const swapRegexp = new RegExp(`(?:^|,)(${jsKeyStr})${swapStr}`, 'm');
 
-const swapHeadAndPosition = (arr, position) => {
+const swapHeadAndPosition = (arr: string[], position: number) => {
     const first = arr[0];
     arr[0] = arr[position % arr.length];
     arr[position] = first;
@@ -61,7 +61,7 @@ export function decipher(tokens: string[], sg: string): string {
     return sig.join('');
 }
 
-export const extractTokens = (body: string): string[] => {
+export const extractTokens = (body: string): string[] | null => {
     const objResult = actionsObjRegexp.exec(body);
     const funcResult = actionsFuncRegexp.exec(body);
     if (!objResult || !funcResult) {

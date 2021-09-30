@@ -2,9 +2,9 @@ import { DownloadOptions, YoutubeVideo, YoutubeVideoFormat } from '../structures
 import { ErrorCodes } from '../util/constants';
 
 /**
- * Downloads a
- * @param video
- * @param format
+ * Downloads a youtube stream using its YoutubeVideo class.
+ * @param video The YoutubeVideo class of the song to download its stream.
+ * @param format The format to use for the song.
  * @returns
  */
 export function downloadFromVideo(video: YoutubeVideo, format?: YoutubeVideoFormat, options?: DownloadOptions) {

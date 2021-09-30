@@ -9,7 +9,7 @@ import prism from 'prism-media';
 
         const format = video.formats.find((c) => c.codec === 'opus' && c.hasAudio && !c.hasVideo);
 
-        console.log(format.url);
+        console.log(format!.url);
         const download = downloadFromVideo(video, format, {
             chunkMode: {},
             pipe: false
@@ -20,7 +20,7 @@ import prism from 'prism-media';
         const packets: Buffer[] = [];
         let sent = 0;
 
-        const writable = createWriteStream(`test.${format.codec}`);
+        const writable = createWriteStream(`test.${format!.codec}`);
         download
             .pipe(new prism.opus.WebmDemuxer())
             .pipe(new prism.opus.Decoder({ channels: 2, frameSize: 960, rate: 48000 }))

@@ -1,6 +1,14 @@
 /**
  * http://en.wikipedia.org/wiki/YouTube#Quality_and_formats
  */
+
+export interface RawVideoFormat {
+    mimeType: string;
+    qualityLabel: string | null;
+    bitrate: number | null;
+    audioBitrate?: number | null;
+}
+
 export default {
     5: {
         mimeType: 'video/flv; codecs="Sorenson H.283, mp3"',
@@ -519,4 +527,4 @@ export default {
         bitrate: 12000000,
         audioBitrate: null
     }
-};
+} as Record<number, RawVideoFormat>;

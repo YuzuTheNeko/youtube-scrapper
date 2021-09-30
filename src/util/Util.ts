@@ -66,8 +66,7 @@ export class Util extends null {
     }
 
     static addMetadataToFormat(format: YoutubeVideoFormat): YoutubeVideoFormat {
-        //@ts-ignore
-        format = Object.assign({}, formats[format.itag], format);
+        format = {...formats[format.itag], ...format};
         format.hasVideo = !!format.qualityLabel;
         format.hasAudio = !!format.audioBitrate;
         format.isLive = /\bsource[/=]yt_live_broadcast\b/.test(format.url as string);
@@ -125,7 +124,7 @@ export class Util extends null {
             const reservedFormat = formats[itag];
 
             if (reservedFormat) {
-                const format = {
+                const format: YoutubeVideoFormat = {
                     ...reservedFormat,
                     itag,
                     url: line,

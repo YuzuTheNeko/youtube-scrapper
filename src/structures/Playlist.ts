@@ -76,7 +76,7 @@ export class Playlist {
         const hasAnotherPage = Boolean(tracks[tracks.length - 1].continuationItemRenderer);
 
         if (hasAnotherPage) {
-            const renderer = tracks.pop();
+            const renderer = tracks[tracks.length - 1];
 
             this.token = renderer.continuationItemRenderer.continuationEndpoint.continuationCommand.token;
 
@@ -141,7 +141,7 @@ export class Playlist {
         const hasAnotherPage = Boolean(tracks[tracks.length - 1].continuationItemRenderer);
 
         if (hasAnotherPage) {
-            const renderer = tracks.pop();
+            const renderer = tracks[tracks.length - 1];
 
             this.token = renderer.continuationItemRenderer.continuationEndpoint.continuationCommand.token;
 

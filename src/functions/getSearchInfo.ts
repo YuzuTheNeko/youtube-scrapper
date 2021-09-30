@@ -13,7 +13,7 @@ export async function getSearchInfo(url: string, limit: number) {
     }
 
     try {
-        const json = JSON.parse(Regexes.YOUTUBE_INITIAL_DATA.exec(request.data)[1]);
+        const json = JSON.parse((Regexes.YOUTUBE_INITIAL_DATA.exec(request.data) as RegExpExecArray)[1]);
 
         return new YoutubeSearchResults(json, limit);
     } catch (error: any) {

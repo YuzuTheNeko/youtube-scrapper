@@ -16,9 +16,10 @@ export interface YoutubeSearchVideoInfo {
     duration: number;
     formattedDuration: string;
     formattedReadableDuration: string;
-    author: {
+    channel: {
         name: string;
         id: string;
+        url: string;
         thumbnails: {
             url: string;
             width: number;
@@ -95,11 +96,12 @@ export class YoutubeSearchResults {
                     id: video.videoId,
                     thumbnails: video.thumbnail.thumbnails,
                     title: video.title.runs[0].text,
-                    author: {
+                    channel: {
                         name: video.ownerText.runs[0].text,
-                        id: video.ownerText.runs[0].navigationEndpoint.commandMetadata.webCommandMetadata.url
-                            .split('/')
-                            .slice(-1)[0],
+                        id: video.ownerText.runs[0].navigationEndpoint.browseEndpoint.browseId,
+                        url: `${Util.getYTChannelURL()}/${
+                            video.ownerText.runs[0].navigationEndpoint.browseEndpoint.browseId
+                        }`,
                         thumbnails:
                             video.channelThumbnailSupportedRenderers.channelThumbnailWithLinkRenderer.thumbnail
                                 .thumbnails
@@ -114,7 +116,7 @@ export class YoutubeSearchResults {
                         formattedDuration
                             .split(':')
                             .map((d: string) => Number(d))
-                            .reduce((acc, time) => 60 * acc + time) * 1000
+                            .reduce((acc: number, time: number) => 60 * acc + time) * 1000
                 });
             } else if (list) {
                 arr.push({
