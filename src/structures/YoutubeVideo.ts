@@ -7,7 +7,7 @@ import { Util } from '../util/Util';
 import { PassThrough } from 'stream';
 import { cachedTokens } from '../util/cache';
 import { download } from '../functions/download';
-import { extractTokens } from '../util/decipher';
+import { decipher, extractTokens } from '../util/decipher';
 
 export interface YoutubeVideoDetails {
     url: string;
@@ -146,14 +146,12 @@ export class YoutubeVideo {
                 frmt = { ...frmt, ...parse(frmt.signatureCipher as string) };
             }
 
-            const sig = this.tokens && frmt.s ? YoutubeVideo.decipher(this.tokens, frmt.s) : undefined;
-
             const url = new URL(decodeURIComponent(frmt.url as string));
 
             url.searchParams.set('ratebypass', 'yes');
 
-            if (sig) {
-                url.searchParams.set(frmt.sp ?? 'signature', sig);
+            if (this.tokens && frmt.s) {
+                url.searchParams.set(frmt.sp ?? 'signature', decipher(this.tokens, frmt.s));
             }
 
             frmt.url = url.toString();
@@ -291,35 +289,6 @@ export class YoutubeVideo {
                 return stream;
             }
         }
-    }
-
-    static decipher(tokens: string[], sig: string): string {
-        let arr = sig.split('');
-
-        for (let i = 0; i < tokens.length; i++) {
-            const token = tokens[i];
-            let position;
-
-            switch (token[0]) {
-                case 'r':
-                    arr = arr.reverse();
-                    break;
-                case 'w':
-                    position = ~~token.slice(1);
-                    arr = Util.swapSignatureArray(arr, position);
-                    break;
-                case 's':
-                    position = ~~token.slice(1);
-                    arr = arr.slice(position);
-                    break;
-                case 'p':
-                    position = ~~token.slice(1);
-                    arr.splice(0, position);
-                    break;
-            }
-        }
-
-        return arr.join('');
     }
 
     get info(): YoutubeVideoDetails & { formats: YoutubeVideoFormat[] } {

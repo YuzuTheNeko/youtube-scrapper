@@ -34,31 +34,32 @@ const swapHeadAndPosition = (arr: string[], position: number) => {
     return arr;
 };
 
-export function decipher(tokens: string[], sg: string): string {
-    let sig = sg.split('');
-    for (let i = 0, len = tokens.length; i < len; i++) {
-        let token = tokens[i],
-            pos;
+export function decipher(tokens: string[], sig: string): string {
+    let arr = sig.split('');
+
+    for (const token of tokens) {
+        let position;
+
         switch (token[0]) {
             case 'r':
-                sig = sig.reverse();
+                arr = arr.reverse();
                 break;
             case 'w':
-                pos = ~~token.slice(1);
-                sig = swapHeadAndPosition(sig, pos);
+                position = ~~token.slice(1);
+                arr = swapHeadAndPosition(arr, position);
                 break;
             case 's':
-                pos = ~~token.slice(1);
-                sig = sig.slice(pos);
+                position = ~~token.slice(1);
+                arr = arr.slice(position);
                 break;
             case 'p':
-                pos = ~~token.slice(1);
-                sig.splice(0, pos);
+                position = ~~token.slice(1);
+                arr.splice(0, position);
                 break;
         }
     }
 
-    return sig.join('');
+    return arr.join('');
 }
 
 export const extractTokens = (body: string): string[] | null => {

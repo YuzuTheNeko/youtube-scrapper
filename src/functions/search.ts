@@ -8,7 +8,7 @@ enum SearchType {
 }
 
 export interface SearchOption {
-    type?: 'video' | 'playlist' | 'channel';
+    type?: keyof typeof SearchType;
     limit?: number;
 }
 

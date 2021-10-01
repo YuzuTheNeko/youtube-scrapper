@@ -1,4 +1,4 @@
-import { Util } from '..';
+import { Util } from '../util/Util';
 
 export interface YoutubeSearchVideoInfo {
     id: string;

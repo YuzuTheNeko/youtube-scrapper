@@ -1,13 +1,13 @@
 import { YoutubeVideoFormat } from '../structures/YoutubeVideo';
 import { parse as xmlParse } from 'fast-xml-parser';
-import formats from './formats';
+import { formats } from './formats';
 import axios from 'axios';
 
 export class Util extends null {
     constructor() {}
 
     static getBaseYTURL() {
-        return 'https://youtube.com';
+        return 'https://www.youtube.com';
     }
 
     static getYTSearchURL() {
@@ -19,15 +19,15 @@ export class Util extends null {
     }
 
     static getYTChannelURL() {
-        return `${Util.getBaseYTURL()}/channel`;
+        return 'https://www.youtube.com/channel';
     }
 
     static getYTTrendingURL() {
-        return `${Util.getBaseYTURL()}/feed/trending`;
+        return 'https://www.youtube.com/feed/trending';
     }
 
     static getYTUserURL() {
-        return `${Util.getBaseYTURL()}/user`;
+        return 'https://www.youtube.com/user';
     }
 
     static getYTPlaylistURL() {
@@ -58,17 +58,10 @@ export class Util extends null {
             : str;
     }
 
-    static swapSignatureArray(arr: string[], position: number): string[] {
-        const first = arr[0];
-        arr[0] = arr[position % arr.length];
-        arr[position] = first;
-        return arr;
-    }
-
     static addMetadataToFormat(format: YoutubeVideoFormat): YoutubeVideoFormat {
-        format = {...formats[format.itag], ...format};
-        format.hasVideo = !!format.qualityLabel;
-        format.hasAudio = !!format.audioBitrate;
+        format = { ...formats[format.itag as keyof typeof formats], ...format };
+        format.hasVideo = Boolean(format.qualityLabel);
+        format.hasAudio = Boolean(format.audioBitrate);
         format.isLive = /\bsource[/=]yt_live_broadcast\b/.test(format.url as string);
         format.isHLS = /\/manifest\/hls_(variant|playlist)\//.test(format.url as string);
         format.isDashMPD = /\/manifest\/dash\//.test(format.url as string);
@@ -77,8 +70,8 @@ export class Util extends null {
 
     static async dashMpdFormat(url: string): Promise<YoutubeVideoFormat[]> {
         const moreFormats: YoutubeVideoFormat[] = [];
-        const xmlData = await axios.get<string>(new URL(url, Util.getYTVideoURL()).toString());
-        const xml = xmlParse(xmlData.data, {
+        const { data } = await axios.get<string>(new URL(url, Util.getYTVideoURL()).toString());
+        const xml = xmlParse(data, {
             attributeNamePrefix: '$',
             ignoreAttributes: false
         });
