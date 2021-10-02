@@ -87,7 +87,7 @@ export class Util extends null {
                         itag,
                         url,
                         type: reservedFormat.mimeType.split(';')[0],
-                        codec: reservedFormat.mimeType.split('"')[1].split('"')[0]
+                        codec: reservedFormat.mimeType.split('"')[1]
                     };
 
                     if (representation['$height']) {
@@ -122,7 +122,7 @@ export class Util extends null {
                     itag,
                     url: line,
                     type: reservedFormat.mimeType.split(';')[0],
-                    codec: reservedFormat.mimeType.split('"')[1].split('"')[0]
+                    codec: reservedFormat.mimeType.split('"')[1]
                 };
 
                 moreFormats.push(Util.addMetadataToFormat(format));

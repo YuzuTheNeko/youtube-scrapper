@@ -113,7 +113,7 @@ export class YoutubeVideo {
                 itag: format.itag,
                 mimeType: format.mimeType,
                 type: format.mimeType.split(';')[0],
-                codec: format.mimeType.split('"')[1].split('"')[0],
+                codec: format.mimeType.split('"')[1],
                 bitrate: format.bitrate,
                 width: format.width,
                 height: format.height,

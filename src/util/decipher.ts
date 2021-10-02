@@ -78,7 +78,7 @@ export const extractTokens = (body: string): string[] | null => {
     const keys = `(${[reverseKey, sliceKey, spliceKey, swapKey].join('|')})`;
     const myreg = `(?:a=)?${obj}(?:\\.${keys}|\\['${keys}'\\]|\\["${keys}"\\])` + `\\(a,(\\d+)\\)`;
     const tokenizeRegexp = new RegExp(myreg, 'g');
-    const tokens = [];
+    const tokens: string[] = [];
     while ((result = tokenizeRegexp.exec(funcBody)) !== null) {
         const key = result[1] || result[2] || result[3];
         switch (key) {

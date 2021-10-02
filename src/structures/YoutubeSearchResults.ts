@@ -67,7 +67,7 @@ export class YoutubeSearchResults {
         this.limit = limit;
     }
 
-    getEstimatedResults(): number {
+    getEstimatedResults() {
         return Number(this.json.estimatedResults);
     }
 

@@ -40,15 +40,15 @@ export class Playlist {
     }
 
     get title() {
-        return this.data?.name as string;
+        return this.data?.name ?? '';
     }
 
-    allLoaded(): this is this & { token: undefined } {
+    allLoaded() {
         return Boolean(this.token);
     }
 
     get description() {
-        return this.data?.description;
+        return this.data?.description ?? '';
     }
 
     async fetch(): Promise<this> {
@@ -72,12 +72,10 @@ export class Playlist {
 
         const tracks = json.onResponseReceivedActions[0].appendContinuationItemsAction.continuationItems;
 
-        const hasAnotherPage = Boolean(tracks[tracks.length - 1].continuationItemRenderer);
+        const renderer = tracks[tracks.length - 1].continuationItemRenderer;
 
-        if (hasAnotherPage) {
-            const renderer = tracks[tracks.length - 1];
-
-            this.token = renderer.continuationItemRenderer.continuationEndpoint.continuationCommand.token;
+        if (renderer) {
+            this.token = renderer.continuationEndpoint.continuationCommand.token;
 
             if (!this.token) {
                 throw new TypeError(ErrorCodes.UNKNOWN_TOKEN);
@@ -137,12 +135,10 @@ export class Playlist {
             json.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0]
                 .itemSectionRenderer.contents[0].playlistVideoListRenderer.contents;
 
-        const hasAnotherPage = Boolean(tracks[tracks.length - 1].continuationItemRenderer);
+        const renderer = tracks[tracks.length - 1].continuationItemRenderer;
 
-        if (hasAnotherPage) {
-            const renderer = tracks[tracks.length - 1];
-
-            this.token = renderer.continuationItemRenderer.continuationEndpoint.continuationCommand.token;
+        if (renderer) {
+            this.token = renderer.continuationEndpoint.continuationCommand.token;
 
             if (!this.token) {
                 throw new TypeError(ErrorCodes.UNKNOWN_TOKEN);
