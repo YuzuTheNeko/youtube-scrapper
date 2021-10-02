@@ -1,6 +1,5 @@
 import axios from 'axios';
 import * as Regexes from '../util/Regexes';
-import { noop } from '../util/noop';
 import { Util } from '../util/Util';
 import { TypeError } from './TypeError';
 import { DEFAULT_CONTEXT, ErrorCodes } from '../util/constants';
@@ -103,7 +102,7 @@ export class Playlist {
             return this.tracks.slice(0, 100);
         }
 
-        const request = await axios.get<string>(`${Util.getYTPlaylistURL()}?list=${this.listId}&hl=en`).catch(noop);
+        const request = await axios.get<string>(`${Util.getYTPlaylistURL()}?list=${this.listId}&hl=en`).catch(() => {});
 
         if (!request) {
             throw new TypeError(ErrorCodes.PLAYLIST_LOAD_FAILED);

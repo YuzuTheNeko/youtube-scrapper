@@ -1,6 +1,8 @@
 import { PassThrough, Readable, Transform } from 'stream';
 import { createWriteStream } from 'fs';
-import { downloadFromVideo, getVideoInfo } from '../functions';
+import { getVideoInfo } from '../functions/getVideoInfo';
+import { downloadFromVideo } from '../functions/downloadFromVideo';
+import { ErrorCodes } from '../util/constants';
 import prism from 'prism-media';
 
 (async () => {
@@ -8,8 +10,11 @@ import prism from 'prism-media';
         const video = await getVideoInfo('gBF2TqxjJSk');
 
         const format = video.formats.find((c) => c.codec === 'opus' && c.hasAudio && !c.hasVideo);
+        if (!format) {
+            throw new Error(ErrorCodes.NO_AVAILABLE_FORMAT);
+        }
 
-        console.log(format!.url);
+        console.log(format.url);
         const download = downloadFromVideo(video, format, {
             chunkMode: {},
             pipe: false
@@ -20,7 +25,7 @@ import prism from 'prism-media';
         const packets: Buffer[] = [];
         let sent = 0;
 
-        const writable = createWriteStream(`test.${format!.codec}`);
+        const writable = createWriteStream(`test.${format.codec}`);
         download
             .pipe(new prism.opus.WebmDemuxer())
             .pipe(new prism.opus.Decoder({ channels: 2, frameSize: 960, rate: 48000 }))

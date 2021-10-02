@@ -19,19 +19,17 @@ export async function getVideoInfo(urlOrId: string) {
     video.getHtml5Player(data);
     await video.fetchTokens();
 
-    video.moreFormats = [];
-    const dashMpdUrl = video['json'].streamingData?.dashManifestUrl;
-    const m3u8Url = video['json'].streamingData?.hlsManifestUrl;
+    const m3u8Url = json.streamingData?.hlsManifestUrl;
+    const dashMpdUrl = json.streamingData?.dashManifestUrl;
 
     if (video.details.isLiveContent && video.details.duration === 0 && m3u8Url) {
-        const pending: Promise<unknown>[] = [Util.m3u8Format(m3u8Url)];
+        video.moreFormats = [];
+        const pending = [Util.m3u8Format(m3u8Url)];
         if (dashMpdUrl) {
             pending.push(Util.dashMpdFormat(dashMpdUrl));
         }
 
-        const resolved = await Promise.all(pending);
-
-        for (const moreFormat of resolved) {
+        for (const moreFormat of await Promise.all(pending)) {
             video.moreFormats.push(...(moreFormat as YoutubeVideoFormat[]));
         }
     }
