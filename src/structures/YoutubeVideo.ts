@@ -30,7 +30,7 @@ export interface YoutubeVideoDetails {
     author: string;
     isPrivate: boolean;
     isUnpluggedCorpus: boolean;
-    isLiveContent: boolean;
+    isLive: boolean;
 }
 
 export interface YoutubeVideoFormat {
@@ -342,7 +342,7 @@ export class YoutubeVideo {
             isPrivate: this.json.videoDetails.isPrivate,
             author: this.json.videoDetails.author,
             isUnpluggedCorpus: this.json.videoDetails.isUnpluggedCorpus,
-            isLiveContent: this.json.videoDetails.isLiveContent
+            isLive: this.json.videoDetails.isLive
         };
     }
 }

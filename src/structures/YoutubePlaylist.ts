@@ -25,7 +25,7 @@ export interface PlaylistData {
     description: string;
 }
 
-export class Playlist {
+export class YoutubePlaylist {
     tracks: PlaylistVideo[] = [];
     listId: string;
     data?: PlaylistData;

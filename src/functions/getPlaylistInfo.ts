@@ -1,14 +1,14 @@
-import { Playlist } from '../structures/Playlist';
+import { YoutubePlaylist } from '../structures/YoutubePlaylist';
 import { Util } from '../util/Util';
 
 export interface GetPlaylistInfoOptions {
     full?: boolean;
 }
 
-export async function getPlaylistInfo(urlOrId: string, options: GetPlaylistInfoOptions = {}): Promise<Playlist> {
+export async function getPlaylistInfo(urlOrId: string, options: GetPlaylistInfoOptions = {}): Promise<YoutubePlaylist> {
     const listId = Util.getListId(urlOrId);
 
-    const playlist = new Playlist(listId);
+    const playlist = new YoutubePlaylist(listId);
 
     if (options.full) {
         await playlist.fetch();

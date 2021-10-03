@@ -22,7 +22,7 @@ export async function getVideoInfo(urlOrId: string) {
     const m3u8Url = json.streamingData?.hlsManifestUrl;
     const dashMpdUrl = json.streamingData?.dashManifestUrl;
 
-    if (video.details.isLiveContent && video.details.duration === 0 && m3u8Url) {
+    if (video.details.isLive && m3u8Url) {
         video.moreFormats = [];
         const pending = [Util.m3u8Format(m3u8Url)];
         if (dashMpdUrl) {
