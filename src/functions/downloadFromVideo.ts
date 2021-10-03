@@ -9,7 +9,8 @@ import { ErrorCodes } from '../util/constants';
  */
 export function downloadFromVideo(video: YoutubeVideo, format?: YoutubeVideoFormat, options?: DownloadOptions) {
     if (!format) {
-        format = video.formats.find((c) => c.quality !== 'LOW');
+        const videoOrAudio = video.formats.filter((c) => c.hasVideo || c.hasAudio);
+        format = videoOrAudio[videoOrAudio.length - 1];
     }
 
     if (!format) {
