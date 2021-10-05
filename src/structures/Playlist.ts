@@ -179,13 +179,13 @@ export class Playlist {
             this.tracks.push({
                 url: `${Util.getYTVideoURL()}${track.videoId}`,
                 id: track.videoId,
-                index: Number(track.index.simpleText),
-                formattedDuration: track.lengthText.simpleText,
-                formattedReadableDuration: track.lengthText.accessibility.accessibilityData.label, 
+                index: Number(track.index?.simpleText),
+                formattedDuration: track.lengthText?.simpleText,
+                formattedReadableDuration: track.lengthText?.accessibility.accessibilityData.label, 
                 duration: Number(track.lengthSeconds) * 1000,
                 isPlayable: track.isPlayable,
                 thumbnails: track.thumbnail?.thumbnails ?? [],
-                title: track.title.runs[0].text
+                title: track.title?.runs?.[0].text
             })
         }
 
