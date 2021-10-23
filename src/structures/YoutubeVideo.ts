@@ -7,6 +7,7 @@ import { PassThrough } from "stream"
 import { cachedTokens } from "../util/cache"
 import { download } from "../functions/download"
 import { extractTokens } from "../util/decipher"
+import { getVideoInfo } from ".."
 
 export interface YoutubeVideoDetails {
     url: string
@@ -77,6 +78,9 @@ export interface YoutubeVideoFormat {
 }
 
 export interface DownloadOptions {
+    debug?: boolean
+    retryFilter?: (format: YoutubeVideoFormat) => boolean
+    startBytes?: number
     chunkMode?: {
         chunkSize?: number
     }
@@ -84,6 +88,7 @@ export interface DownloadOptions {
     resource?: PassThrough,
     begin?: number | string
     pipe?: boolean
+    _retryAmount?: number
 }
 
 export class YoutubeVideo {
@@ -168,6 +173,8 @@ export class YoutubeVideo {
     }
 
     download(format: YoutubeVideoFormat, options: DownloadOptions = {}) {
+        if (!format) throw new Error(`No format was given to download ${this.url}.`)
+
         if (format.isHLS || format.isDashMPD) {
             return m3u8stream(format.url as string, {
                 id: String(format.itag),
@@ -189,7 +196,7 @@ export class YoutubeVideo {
     
                 let downloadChunkSize = options.chunkMode.chunkSize ?? 256 * 1024
     
-                let endBytes = downloadChunkSize, startBytes = 0
+                let endBytes = downloadChunkSize + (options.startBytes ?? 0), startBytes = options.startBytes ?? 0
 
                 const pipelike = options.pipe ?? true
                 
@@ -212,15 +219,38 @@ export class YoutubeVideo {
                         }
                     })
 
-                    // Handle unknown 403 errors accordinly.
+                    // Handle unknown 403 / 410 errors accordinly.
                     request.once("error", error => {
-                        try { request.destroy() } catch { }
+                        try { 
+                            request.destroy() 
+                        } catch {};
                         if (error.message.includes("403")) {
                             request.removeAllListeners()
                             options.resource = stream
-                            download(this.details.url)
+                            const frmts = this.formats.filter(c => c.hasAudio && !c.hasVideo)
+                            
+                            if (options._retryAmount === 5) {
+                                stream.emit('error', new Error(`Max amount of tries reached.`))
+                                return;
+                            }
+
+                            getVideoInfo(this.url, false).then(vid => {
+                                options._retryAmount = options._retryAmount ? options._retryAmount + 1 : 1
+                                if (options.debug) console.debug(`[VIDEO DEBUG]: Encountered 403 on format (URL ${this.url}), retrying download.`)
+                                const format = options.retryFilter ? this.formats.find(options.retryFilter) : this.formats.find(c => c.type === 'opus' && c.hasAudio && !c.hasVideo) ?? this.formats.find(c => c.type === 'opus') ?? this.formats.find(c => !c.hasVideo) ?? this.formats[Math.floor(Math.random() * this.formats.length)]
+                                if (!format) {
+                                    stream.emit('error', new Error(`Could not find any format to retry.`))
+                                    return;
+                                }
+                                vid.download(format, options)
+                            })
+                        } else if (error.message.includes("410")) {
+                            if (options.debug) console.debug(`[VIDEO DEBUG]: Encountered error: ${error.message} (URL ${this.url}) (410), reconnecting on bytes ${startBytes}.`)
+                            options.startBytes = startBytes;
+                            options.resource = stream;
+                            this.download(format, options)
                         } else {
-                            throw error
+                            stream.emit('error', error)
                         }
                     })
     
@@ -229,6 +259,7 @@ export class YoutubeVideo {
                             request.destroy()
                             return;
                         }
+            
                         startBytes += chunk.length
                         
                         if (pipelike) {
