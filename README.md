@@ -38,8 +38,3 @@ async function main() {
 
 main()
 ```
-
-### Disclaimer
-Before using this package, keep in mind this was not fully tested in all scenarios and it might break without notice. <br>
-As per video downloading, some formats might throw `403` status, which means they are not available or failed to be decoded. <br>
-If you are using this for a discord bot, keep in mind you'll need to enable chunking for a faster download and to prevent youtube abortions or connection resets.

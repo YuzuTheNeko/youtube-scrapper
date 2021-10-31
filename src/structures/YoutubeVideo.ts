@@ -290,17 +290,6 @@ export class YoutubeVideo {
 
                 const request = Miniget(format.url as string) 
 
-                request.once("error", error => {
-                    if (error.message.includes("403")) {
-                        request.removeAllListeners()
-                        options.resource = stream
-                        download(this.details.url)
-                    } else {
-                        throw error
-                    }
-                    request.destroy()
-                })
-
                 request.once("end", request.destroy)
                 stream.once("end", stream.destroy)
 

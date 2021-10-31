@@ -1,6 +1,6 @@
 {
   "name": "youtube-scrapper",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Download videos and get info on them aswell as searching and other features.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
