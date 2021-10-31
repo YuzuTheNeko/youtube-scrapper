@@ -78,7 +78,7 @@ export interface YoutubeVideoFormat {
 }
 
 export interface DownloadOptions {
-    debug?: boolean
+    debug?: boolean | ((info: string) => Promise<void> | void)
     retryFilter?: (format: YoutubeVideoFormat) => boolean
     startBytes?: number
     chunkMode?: {
@@ -88,6 +88,9 @@ export interface DownloadOptions {
     resource?: PassThrough,
     begin?: number | string
     pipe?: boolean
+    /**
+     * Do not use this property.
+     */
     _retryAmount?: number
 }
 
@@ -236,7 +239,12 @@ export class YoutubeVideo {
 
                             getVideoInfo(this.url, false).then(vid => {
                                 options._retryAmount = options._retryAmount ? options._retryAmount + 1 : 1
-                                if (options.debug) console.debug(`[VIDEO DEBUG]: Encountered 403 on format (URL ${this.url}), retrying download.`)
+                                if (options.debug) {
+                                    const str = `[VIDEO DEBUG]: Encountered 403 on format (URL ${this.url}), retrying download.`
+                                    if (typeof options.debug === 'function') {
+                                        options.debug(str)
+                                    } else console.debug(str)
+                                }
                                 const format = options.retryFilter ? this.formats.find(options.retryFilter) : this.formats.find(c => c.type === 'opus' && c.hasAudio && !c.hasVideo) ?? this.formats.find(c => c.type === 'opus') ?? this.formats.find(c => !c.hasVideo) ?? this.formats[Math.floor(Math.random() * this.formats.length)]
                                 if (!format) {
                                     stream.emit('error', new Error(`Could not find any format to retry.`))
@@ -245,7 +253,12 @@ export class YoutubeVideo {
                                 vid.download(format, options)
                             })
                         } else if (error.message.includes("410")) {
-                            if (options.debug) console.debug(`[VIDEO DEBUG]: Encountered error: ${error.message} (URL ${this.url}) (410), reconnecting on bytes ${startBytes}.`)
+                            if (options.debug) {
+                                const str = `[VIDEO DEBUG]: Encountered error: ${error.message} (URL ${this.url}) (410), reconnecting on bytes ${startBytes}.`
+                                if (typeof options.debug === 'function') {
+                                    options.debug(str)
+                                } else console.debug(str)
+                            }
                             options.startBytes = startBytes;
                             options.resource = stream;
                             this.download(format, options)

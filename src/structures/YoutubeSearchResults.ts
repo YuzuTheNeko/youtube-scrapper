@@ -40,11 +40,26 @@ export class YoutubeSearchResults {
     }
 
     get videos(): YoutubeSearchVideoInfo[] {
+        return this.#getVideos()
+    }
+
+    video(index: number): YoutubeSearchVideoInfo | null {
+        return this.#getVideos(1, index).at(0) ?? null
+    }
+
+    videosFrom(index: number): YoutubeSearchVideoInfo | null
+    videosFrom(index: number, limit: 1): YoutubeSearchVideoInfo | null
+    videosFrom(index: number, limit: number): YoutubeSearchVideoInfo[] 
+    videosFrom(index: number = 0, limit?: number): YoutubeSearchVideoInfo[] | YoutubeSearchVideoInfo | null {
+        return limit === 1 ? this.video(index) : this.#getVideos(limit, index)
+    }
+
+    #getVideos(limit?: number, start = 0) {
         const arr: YoutubeSearchVideoInfo[] = []
 
         const videos = this.json.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer.contents[0].itemSectionRenderer.contents
 
-        for (const data of videos) {
+        for (const data of (limit ? videos.slice(start, limit + start) : videos.slice(start))) {
             const video = data.videoRenderer
 
             if (video) {
