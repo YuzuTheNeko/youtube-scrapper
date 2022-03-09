@@ -77,7 +77,7 @@ export class Util extends null {
         })
 
         for (const adaptationSet of xml.MPD.Period.AdaptationSet) {
-            for (const representation of adaptationSet.Representation) {
+            for (const representation of Array.isArray(adaptationSet.Representation) ? adaptationSet.Representation : [adaptationSet.Representation]) {
                 const itag = Number(representation["$id"]) as keyof typeof formats
                 const reservedFormat = formats[itag]
 
