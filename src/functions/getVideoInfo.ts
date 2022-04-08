@@ -1,5 +1,6 @@
 import axios from "axios";
 import { YoutubeVideo, YoutubeVideoFormat } from "../structures/YoutubeVideo";
+import { JSONParser } from "../util/jsonParser";
 import { Util } from "../util/Util";
 
 export async function getVideoInfo(urlOrId: string, getPlaylistFormats: boolean = false) {
@@ -7,7 +8,7 @@ export async function getVideoInfo(urlOrId: string, getPlaylistFormats: boolean 
 
     const request = await axios.get<string>(`${Util.getYTVideoURL()}${id}&hl=en`)
 
-    const json = JSON.parse(request.data.split("var ytInitialPlayerResponse = ")[1].split(";</script>")[0])
+    const json = JSONParser(request.data.split("var ytInitialPlayerResponse = ")[1].split(";</script>")[0])
 
     if (json.playabilityStatus?.status === "ERROR") {
         throw Error(json.playabilityStatus.reason)

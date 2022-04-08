@@ -4,6 +4,7 @@ import { noop } from "../util/noop"
 import { Util } from "../util/Util"
 import { TypeError } from "./TypeError"
 import { DEFAULT_CONTEXT, ErrorCodes } from "../util/constants"
+import { JSONParser } from "../util/jsonParser";
 
 export interface PlaylistVideo {
     id: string
@@ -115,7 +116,7 @@ export class Playlist {
             throw new TypeError(ErrorCodes.PLAYLIST_LOAD_FAILED)
         }
 
-        const json = JSON.parse(res)
+        const json = JSONParser(res)
 
         const apiKey = Regexes.YOUTUBE_API_KEY.exec(request.data)?.[2]
 

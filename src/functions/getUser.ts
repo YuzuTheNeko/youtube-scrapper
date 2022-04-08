@@ -1,5 +1,6 @@
 import axios from "axios";
 import { YoutubeChannel } from "../structures/YoutubeChannel";
+import { JSONParser } from "../util/jsonParser";
 import { Util } from "../util/Util";
 
 /**
@@ -10,7 +11,7 @@ import { Util } from "../util/Util";
 export async function getUser(id: string) {
     const request = await axios.get<string>(`${Util.getYTUserURL()}/${id}?hl=en`)
 
-    const json = JSON.parse(
+    const json = JSONParser(
         Util.getBetween(
             request.data,
             `var ytInitialData = `,

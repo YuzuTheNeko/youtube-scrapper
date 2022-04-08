@@ -73,6 +73,6 @@ client.on("ready", async () => {
 })
 
 // Hidden file
-import config from "./config.json"
+//import config from "./config.json"
 
-client.login(config.token)
+//client.login(config.token)
