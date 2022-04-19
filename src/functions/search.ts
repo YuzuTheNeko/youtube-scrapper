@@ -2,6 +2,7 @@ import axios from "axios";
 import { SearchError } from "../structures/SearchError";
 import { YoutubeSearchResults } from "../structures/YoutubeSearchResults";
 import { ErrorCodes } from "../util/constants";
+import { JSONParser } from "../util/jsonParser";
 import { noop } from "../util/noop";
 import { Util } from "../util/Util";
 
@@ -19,7 +20,7 @@ export async function search(query: string) {
     }
 
     try {
-        const json = JSON.parse(
+        const json = JSONParser(
             Util.getBetween(
                 request.data,
                 `var ytInitialData = `,
