@@ -3,16 +3,16 @@
 [![NPM Downloads](https://img.shields.io/npm/dt/youtube-scrapper.svg?maxAge=3600)](https://www.npmjs.com/package/youtube-scrapper)
 
 ## Table Of Contents
-- [Installing](#installing)
 - [Useful Links](#links)
+- [Installing](#installing)
 - [Example Usage](#example)
-
-### Installing
-Simply use `npm i youtube-scrapper`.
 
 ### Links
 - [Documentation](https://yuzutheneko.github.io/youtube-scrapper)
 - [GitHub Repository](https://github.com/YuzuTheNeko/youtube-scrapper)
+
+### Installing
+Simply use `npm i youtube-scrapper`.
 
 ### Example
 ```js
