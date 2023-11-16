@@ -7,12 +7,12 @@
 - [Useful Links](#links)
 - [Example Usage](#example)
 
+### Installing
+Simply use `npm i youtube-scrapper`.
+
 ### Links
 - [Documentation](https://yuzutheneko.github.io/youtube-scrapper)
 - [GitHub Repository](https://github.com/YuzuTheNeko/youtube-scrapper)
-
-### Installing
-Simply use `npm i youtube-scrapper`.
 
 ### Example
 ```js
