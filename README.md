@@ -6,7 +6,6 @@
 - [Installing](#installing)
 - [Useful Links](#links)
 - [Example Usage](#example)
-- [Disclaimer](#disclaimer)
 
 ### Links
 - [Documentation](https://yuzutheneko.github.io/youtube-scrapper)
