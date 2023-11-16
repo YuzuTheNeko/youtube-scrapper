@@ -9,8 +9,8 @@
 - [Disclaimer](#disclaimer)
 
 ### Links
-- [Documentation](https://rubenennj.github.io/youtube-scrapper)
-- [GitHub Repository](https://github.com/Rubenennj/youtube-scrapper)
+- [Documentation](https://yuzutheneko.github.io/youtube-scrapper)
+- [GitHub Repository](https://github.com/YuzuTheNeko/youtube-scrapper)
 
 ### Installing
 Simply use `npm i youtube-scrapper`.
