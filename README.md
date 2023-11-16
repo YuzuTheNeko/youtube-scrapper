@@ -23,7 +23,7 @@ async function main() {
     // Getting videos through query.
     const result = await scrapper.search("best hits 2010")
 
-    console.log(result.videos.map(vid => vid.details.title)) // Array of videos mapped by name.
+    console.log(result.videos.map(vid => vid.title)) // Array of videos mapped by name.
 
     // Downloading first result and piping to a file.
     // We have to get the full song info first.
